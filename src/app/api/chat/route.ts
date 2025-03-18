@@ -76,24 +76,17 @@ const KEYWORDS = {
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
-    const lowerMessage = message.toLowerCase();
 
-    // Check if the message is about Furkan
-    if (!isQuestionAboutFurkan(lowerMessage)) {
-      return NextResponse.json({
-        response: "I'm Furkan's AI assistant, and I can only answer questions about Furkan. Could you please ask something about him, his skills, projects, or experience?"
-      });
-    }
-
-    // Determine the category of the question and generate response
-    const response = generateResponse(lowerMessage);
+    // Basit bir yanıt mantığı
+    const response = `I received your message: "${message}". This is a test response.`;
 
     return NextResponse.json({ response });
   } catch (error) {
     console.error('Error:', error);
-    return NextResponse.json({
-      response: "I apologize, but I'm having trouble processing your request. I can tell you about Furkan's skills, projects, or experience. What would you like to know?"
-    });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 }
 

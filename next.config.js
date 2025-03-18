@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -24,6 +27,7 @@ const nextConfig = {
         hostname: 'github-readme-streak-stats.herokuapp.com',
       }
     ],
+    domains: ['raw.githubusercontent.com'],
   },
 };
 

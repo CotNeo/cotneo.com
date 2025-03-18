@@ -59,6 +59,9 @@ const About = () => {
           </div>
 
           <div className={`space-y-6 transition-all duration-1000 delay-300 transform ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
+            <p className="text-gray-300/90 mb-4">
+              I am a full-stack developer with expertise in modern web technologies. Let us build something amazing together!
+            </p>
             <p className="text-lg text-gray-100 leading-relaxed hover:text-blue-300 transition-colors duration-300">
             I am a passionate full-stack developer with expertise in cloud and AI integrations, constantly pushing the boundaries of innovation. 
             My focus is on building scalable and efficient solutions 
