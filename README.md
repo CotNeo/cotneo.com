@@ -61,7 +61,7 @@ The site is deployed on Vercel. Every push to the main branch triggers an automa
 ## Contact
 
 - Website: [cotneo.com](https://cotneo.com)
-- GitHub: [@furkanakar](https://github.com/furkanakar)
+- GitHub: [@cotneo](https://github.com/cotneo)
 
 ## License
 
