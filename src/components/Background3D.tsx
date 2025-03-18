@@ -9,7 +9,7 @@ function GalaxyParticles() {
   const points = useRef<THREE.Points>(null);
   const mousePosition = useRef({ x: 0, y: 0 });
   const [hoveredParticle, setHoveredParticle] = useState<number | null>(null);
-  const { size, camera } = useThree();
+  const { size, camera, gl } = useThree();
   const particleCount = 3000;
   const branches = 5;
   const spin = 1;
@@ -47,7 +47,7 @@ function GalaxyParticles() {
     }
 
     return { positions, colors, sizes };
-  }, []);
+  }, [branches, spin, randomness, randomnessPower, insideColor, outsideColor]);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
