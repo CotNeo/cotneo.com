@@ -1,5 +1,5 @@
 'use client';
-
+/* eslint-disable react/no-unescaped-entities */
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 interface Message {
@@ -9,7 +9,7 @@ interface Message {
 
 const INITIAL_MESSAGE: Message = {
   role: 'assistant',
-  content: "Hello! I am Furkan&apos;s AI assistant. I can answer questions about Furkan, his skills, projects, and experience. What would you like to know? (Note: You can ask up to 3 questions)"
+  content: "Hello! I am Furkan's AI assistant. I can answer questions about Furkan, his skills, projects, and experience. What would you like to know? (Note: You can ask up to 3 questions)"
 };
 
 const SUGGESTION_QUESTIONS = [

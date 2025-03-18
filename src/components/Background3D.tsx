@@ -1,15 +1,14 @@
 'use client';
 
-import { useRef, useMemo, useState, useEffect } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Points, PointMaterial, useTexture } from '@react-three/drei';
+import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
 function GalaxyParticles() {
   const points = useRef<THREE.Points>(null);
   const mousePosition = useRef({ x: 0, y: 0 });
-  const [hoveredParticle, setHoveredParticle] = useState<number | null>(null);
-  const { size, camera, gl } = useThree();
+  const { gl } = useThree();
   const particleCount = 3000;
   const branches = 5;
   const spin = 1;
@@ -235,7 +234,7 @@ const Background3D = () => {
 };
 
 function Effects() {
-  const { gl, scene, camera, size } = useThree();
+  const { gl, size } = useThree();
 
   useEffect(() => {
     gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
