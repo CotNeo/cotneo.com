@@ -9,15 +9,18 @@ interface Message {
 
 const INITIAL_MESSAGE: Message = {
   role: 'assistant',
-  content: "Hello! I am Furkan's AI assistant. I can answer questions about Furkan, his skills, projects, and experience. What would you like to know? (Note: You can ask up to 3 questions)"
+  content: "Hi! 👋 I'm Furkan's AI assistant. I can tell you all about his skills, projects, experience, and more. What would you like to know?"
 };
 
 const SUGGESTION_QUESTIONS = [
-  "What are Furkan's skills in frontend development?",
-  "Tell me about Furkan's projects",
-  "What is Furkan's background and experience?",
-  "What technologies does Furkan work with?",
-  "What are Furkan's interests in tech?"
+  "Tell me about your frontend development skills",
+  "What projects have you worked on?",
+  "What's your professional background?",
+  "What technologies do you use the most?",
+  "What are your main interests in tech?",
+  "Can you tell me about your experience?",
+  "What databases do you work with?",
+  "Tell me about your cloud expertise"
 ];
 
 const ChatBot = () => {
@@ -56,15 +59,6 @@ const ChatBot = () => {
     const messageToSend = suggestedQuestion || input;
     if ((!messageToSend.trim() && !suggestedQuestion) || isLoading) return;
 
-    // Kullanıcı mesaj limitini kontrol et
-    if (getUserMessageCount() >= 3) {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: "Sorry, you've reached the maximum question limit (3). Please refresh the page to ask new questions."
-      }]);
-      return;
-    }
-
     const userMessage: Message = { role: 'user', content: messageToSend };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
@@ -78,22 +72,45 @@ const ChatBot = () => {
       });
 
       const data = await response.json();
-      const assistantMessage: Message = { role: 'assistant', content: data.response };
+
+      if (!response.ok) {
+        throw new Error(data.error || 'An error occurred while processing your request');
+      }
+
+      if (!data.response) {
+        throw new Error('No response received from server');
+      }
+
+      const assistantMessage: Message = { 
+        role: 'assistant', 
+        content: data.response
+      };
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Kullanılan öneriyi kaldır ve yeni öneriler göster
+      // Update suggestions based on context
       if (suggestedQuestion) {
-        setSuggestions(prev => prev.filter(q => q !== suggestedQuestion));
+        const remainingSuggestions = SUGGESTION_QUESTIONS.filter(q => 
+          q !== suggestedQuestion && 
+          !messages.some(m => m.role === 'user' && m.content === q)
+        );
+        const shuffled = [...remainingSuggestions].sort(() => Math.random() - 0.5);
+        setSuggestions(shuffled.slice(0, 3));
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error in handleSubmit:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, an error occurred. Please try again.'
+        content: error instanceof Error ? error.message : 'An error occurred while processing your request. Please try again.'
       }]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleReset = () => {
+    setMessages([INITIAL_MESSAGE]);
+    setSuggestions(SUGGESTION_QUESTIONS.sort(() => Math.random() - 0.5).slice(0, 3));
+    setInput('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -128,13 +145,20 @@ const ChatBot = () => {
       {isOpen && (
         <div className="absolute bottom-16 right-0 w-96 h-[500px] bg-gray-900 rounded-lg shadow-2xl border border-gray-800 flex flex-col overflow-hidden animate-slideUp">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-blue-500 to-purple-600">
-            <h3 className="text-white font-semibold">Chat with Furkan's AI Assistant</h3>
-            <p className="text-white/80 text-sm mt-1">
-              {remainingQuestions > 0 
-                ? `Remaining questions: ${remainingQuestions}`
-                : 'Question limit reached. Refresh the page to ask new questions.'}
-            </p>
+          <div className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 flex justify-between items-center">
+            <div>
+              <h3 className="text-white font-semibold">Chat with Furkan's AI Assistant</h3>
+              <p className="text-white/80 text-sm mt-1">Ask me anything about Furkan!</p>
+            </div>
+            <button
+              onClick={handleReset}
+              className="text-white/80 hover:text-white transition-colors"
+              title="Reset conversation"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
           </div>
 
           {/* Messages */}
@@ -167,14 +191,14 @@ const ChatBot = () => {
               </div>
             )}
             {/* Önerilen Sorular */}
-            {remainingQuestions > 0 && suggestions.length > 0 && (
+            {suggestions.length > 0 && (
               <div className="space-y-2">
-                <p className="text-gray-400 text-sm">Suggested questions:</p>
+                <p className="text-gray-400 text-sm">You might want to ask:</p>
                 <div className="flex flex-wrap gap-2">
-                  {suggestions.slice(0, 3).map((question, index) => (
+                  {suggestions.map((question, index) => (
                     <button
                       key={index}
-                      onClick={() => handleSuggestionClick(question)}
+                      onClick={() => handleSubmit(null, question)}
                       className="text-sm bg-gray-800 text-gray-300 px-3 py-1 rounded-full hover:bg-gray-700 transition-colors"
                     >
                       {question}
@@ -194,19 +218,21 @@ const ChatBot = () => {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={remainingQuestions > 0 
-                  ? "Ask me anything about Furkan..."
-                  : "Question limit reached"}
+                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSubmit(e)}
+                placeholder="Ask me anything about Furkan..."
                 className="flex-1 bg-gray-800 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={isLoading || remainingQuestions === 0}
+                disabled={isLoading}
               />
               <button
                 type="submit"
-                disabled={isLoading || !input.trim() || remainingQuestions === 0}
+                disabled={isLoading || !input.trim()}
                 className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  'Send'
+                )}
               </button>
             </div>
           </form>

@@ -1,82 +1,257 @@
 import { NextResponse } from 'next/server';
 
-const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY;
-const API_URL = "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill";
-
-// Detailed information about Furkan
 const FURKAN_INFO = {
   personal: {
-    name: "Furkan Akar",
+    name: "Furkan",
     role: "Full Stack Developer",
     location: "Turkey",
     education: "Computer Engineering",
-    languages: ["Turkish", "English (B2 Level)"],
-    achievements: [
-      "Completed Full Stack Open course with excellence",
-      "Strong problem-solving skills",
-      "Quick learner with adaptable mindset"
-    ]
+    languages: ["Turkish", "English"],
+    summary: "A passionate Full Stack Developer specializing in MERN stack and modern web technologies"
   },
   skills: {
-    frontend: ["Next.js", "React", "TypeScript", "Three.js", "TailwindCSS", "Material-UI"],
-    backend: ["Node.js", "Python", "FastAPI", "GraphQL", "RESTful APIs"],
-    database: ["MongoDB", "PostgreSQL"],
-    cloud: ["AWS", "Vercel", "Docker"],
-    tools: ["Git", "VS Code", "Postman"],
-    softSkills: [
-      "Excellent English communication (B2 Level)",
-      "Team collaboration",
-      "Problem-solving",
-      "Fast learning ability"
-    ]
+    frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "React Bootstrap", "Redux", "Zustand", "Recoil"],
+    backend: ["Node.js", "Express", "GraphQL", "RESTful APIs", "WebSockets"],
+    database: ["MongoDB", "PostgreSQL", "Mongoose"],
+    cloud: ["AWS", "Vercel", "Docker", "Netlify", "CI/CD Pipelines"],
+    testing: ["Jest", "Cypress", "Supertest"],
+    tools: ["Git", "VS Code", "Postman", "Vite", "Babel", "npm"]
   },
   projects: [
     {
       name: "Personal Portfolio",
-      description: "Modern and sophisticated web portfolio showcasing professional work and skills",
-      technologies: ["Next.js", "Three.js", "TailwindCSS"],
-      features: ["3D animations", "Responsive design", "Modern UI/UX", "Performance optimized"]
+      description: "A modern portfolio website with 3D animations and AI chatbot",
+      technologies: ["Next.js", "TypeScript", "Three.js", "Tailwind CSS"],
+      features: ["3D Animations", "AI Chat Assistant", "Responsive Design", "Dark Mode"],
+      link: "https://cotneo.com"
     },
     {
-      name: "AI Chat Assistant",
-      description: "Advanced chatbot using cutting-edge AI technology",
-      technologies: ["Next.js", "TypeScript", "Hugging Face API"],
-      features: ["Context-aware responses", "Natural language processing", "User-friendly interface"]
+      name: "Full Stack Applications",
+      description: "Various MERN stack applications with modern features",
+      technologies: ["React", "Node.js", "MongoDB", "Express", "GraphQL"],
+      features: ["RESTful APIs", "GraphQL Integration", "Real-time Updates", "Authentication"],
+      link: "https://github.com/CotNeo"
     }
   ],
-  interests: [
-    "Modern Web Development",
-    "3D Graphics and Animations",
-    "Artificial Intelligence",
-    "Cloud Computing",
-    "Open Source Development",
-    "Emerging Technologies"
-  ],
   experience: {
-    summary: "Talented Full Stack Developer with a strong foundation in modern web technologies and a proven track record of building sophisticated applications. Completed the prestigious Full Stack Open course, demonstrating expertise in full-stack development. Excellent English communication skills (B2 level) enabling effective collaboration in international environments.",
+    current: "Full Stack Developer",
+    years: 3,
+    summary: "3+ years of experience in full-stack development, specializing in MERN stack and modern web technologies. Currently preparing for AWS Developer Associate certification.",
     highlights: [
-      "Expert in modern frontend development",
-      "Strong backend architecture skills",
-      "Full Stack Open course graduate",
-      "Cloud deployment expertise",
-      "Advanced English proficiency"
+      "Expertise in MERN Stack Development",
+      "Building Scalable & Performant Applications",
+      "Implementing Microservices Architecture",
+      "Web Performance Optimization",
+      "DevOps & Automation"
+    ],
+    companies: [
+      {
+        name: "freelancer",
+        role: "Full Stack Developer",
+        period: "2021-present",
+        achievements: [
+          "Developed multiple full-stack applications",
+          "Implemented modern state management solutions",
+          "Optimized application performance",
+          "Integrated AI-driven features"
+        ]
+      }
     ]
-  }
+  },
+  interests: [
+    "Web Development",
+    "System Design",
+    "Microservices",
+    "AI-Driven Applications",
+    "DevOps Automation",
+    "Cloud Computing",
+    "Web Performance",
+    "Open Source"
+  ],
+  certifications: [
+    {
+      name: "Full Stack Open Certificate",
+      issuer: "University of Helsinki",
+      link: "https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/4122575dc0cda9c0d7ae61c0476a0d16"
+    },
+    {
+      name: "Full Stack GraphQL Certificate",
+      issuer: "University of Helsinki",
+      link: "https://studies.cs.helsinki.fi/stats/api/certificate/fs-graphql/en/9a2e150918ec8fa50aaae6c6b5c1f93d"
+    },
+    {
+      name: "AWS Developer Associate",
+      status: "In Progress"
+    }
+  ]
 };
 
-// Keywords and related information
 const KEYWORDS = {
-  personal: ["who", "background", "education", "where", "live", "from", "about you", "furkan"],
-  skills: ["skill", "technology", "tech stack", "framework", "language", "tool", "can you", "work with"],
-  projects: ["project", "portfolio", "work", "built", "create", "develop", "made"],
-  experience: ["experience", "work", "professional", "career", "job"],
-  interests: ["interest", "hobby", "passion", "like", "enjoy"]
+  personal: ["who", "background", "education", "language", "about", "where", "location", "tell", "what", "how", "when"],
+  skills: ["skill", "technology", "tech", "stack", "frontend", "backend", "database", "cloud", "tool", "use", "work", "know", "can"],
+  projects: ["project", "portfolio", "work", "built", "create", "develop", "application", "make", "done", "show", "demo"],
+  experience: ["experience", "job", "work", "company", "achievement", "role", "position", "year", "career", "professional"],
+  interests: ["interest", "passion", "hobby", "like", "enjoy", "focus", "love", "prefer", "favorite"]
 };
+
+function generateContextAwareResponse(message: string, info: any): string {
+  try {
+    const lowerMessage = message.toLowerCase();
+    let responses: string[] = [];
+    let context: string[] = [];
+
+    // Improved context gathering
+    if (lowerMessage.includes("example") || lowerMessage.includes("specific") || lowerMessage.includes("like")) {
+      context.push("specific");
+    }
+    if (lowerMessage.includes("detail") || lowerMessage.includes("more") || lowerMessage.includes("tell") || lowerMessage.includes("explain")) {
+      context.push("detailed");
+    }
+    if (lowerMessage.includes("latest") || lowerMessage.includes("recent") || lowerMessage.includes("current") || lowerMessage.includes("now")) {
+      context.push("recent");
+    }
+
+    // Check for general questions
+    if (lowerMessage.includes("hi") || lowerMessage.includes("hello") || lowerMessage.includes("hey")) {
+      responses.push("Hello! I'm here to tell you about Furkan. What would you like to know?");
+      return responses.join(" ");
+    }
+
+    // More flexible keyword matching
+    const matchedCategories = Object.entries(KEYWORDS).filter(([_, keywords]) =>
+      keywords.some(keyword => lowerMessage.includes(keyword))
+    ).map(([category]) => category);
+
+    // If no exact matches, try to infer the category from the question
+    if (matchedCategories.length === 0) {
+      if (lowerMessage.includes("do") || lowerMessage.includes("can") || lowerMessage.includes("what")) {
+        matchedCategories.push("skills");
+      }
+      if (lowerMessage.includes("made") || lowerMessage.includes("created")) {
+        matchedCategories.push("projects");
+      }
+      if (lowerMessage.includes("worked") || lowerMessage.includes("doing")) {
+        matchedCategories.push("experience");
+      }
+    }
+
+    // Generate responses for each matched category
+    matchedCategories.forEach(category => {
+      switch (category) {
+        case "personal":
+          if (context.includes("detailed")) {
+            responses.push(`${info.personal.name} is a ${info.personal.role} based in ${info.personal.location}. With a background in ${info.personal.education}, he is ${info.personal.summary}. He is fluent in ${info.personal.languages.join(" and ")}.`);
+          } else {
+            responses.push(`${info.personal.name} is a ${info.personal.role} based in ${info.personal.location}.`);
+          }
+          break;
+
+        case "skills":
+          if (lowerMessage.includes("frontend")) {
+            const frontendSkills = info.skills.frontend;
+            responses.push(context.includes("detailed")
+              ? `In frontend development, Furkan specializes in ${frontendSkills.slice(0, -1).join(", ")} and ${frontendSkills.slice(-1)}. He has extensive experience building responsive and performant web applications using these technologies.`
+              : `Frontend skills include ${frontendSkills.join(", ")}.`);
+          } else if (lowerMessage.includes("backend")) {
+            const backendSkills = info.skills.backend;
+            responses.push(context.includes("detailed")
+              ? `For backend development, Furkan works with ${backendSkills.join(", ")}. He has built scalable APIs and microservices using these technologies.`
+              : `Backend technologies include ${backendSkills.join(", ")}.`);
+          } else if (lowerMessage.includes("database")) {
+            responses.push(`Furkan has experience with databases like ${info.skills.database.join(", ")}.`);
+          } else if (lowerMessage.includes("cloud")) {
+            responses.push(`In cloud technologies, Furkan works with ${info.skills.cloud.join(", ")}.`);
+          } else {
+            responses.push(context.includes("detailed")
+              ? `Furkan's technical expertise spans frontend (${info.skills.frontend.join(", ")}), backend (${info.skills.backend.join(", ")}), databases (${info.skills.database.join(", ")}), and cloud platforms (${info.skills.cloud.join(", ")}).`
+              : `Technical skills include frontend and backend development, database management, and cloud technologies.`);
+          }
+          break;
+
+        case "projects":
+          const relevantProjects = info.projects.filter((p: any) => 
+            lowerMessage.includes(p.name.toLowerCase()) || 
+            p.technologies.some((tech: string) => lowerMessage.includes(tech.toLowerCase()))
+          );
+
+          if (relevantProjects.length > 0) {
+            relevantProjects.forEach((project: any) => {
+              if (context.includes("detailed")) {
+                responses.push(`${project.name}: ${project.description}. Built using ${project.technologies.join(", ")}. Key features include ${project.features.join(", ")}. You can check it out at ${project.link}`);
+              } else {
+                responses.push(`${project.name}: ${project.description}. Built with ${project.technologies.join(", ")}.`);
+              }
+            });
+          } else if (context.includes("recent")) {
+            const latestProject = info.projects[0];
+            responses.push(`Most recent project: ${latestProject.name} - ${latestProject.description}`);
+          } else {
+            responses.push(`Notable projects include: ${info.projects.map((p: any) => p.name).join(", ")}.`);
+          }
+          break;
+
+        case "experience":
+          if (context.includes("detailed")) {
+            responses.push(info.experience.summary);
+            responses.push(`Current role: ${info.experience.current}`);
+            responses.push(`Key achievements: ${info.experience.highlights.join(", ")}`);
+          } else if (context.includes("specific")) {
+            const company = info.experience.companies[0];
+            responses.push(`At ${company.name}, as ${company.role}, key achievements include: ${company.achievements.join(", ")}`);
+          } else {
+            responses.push(info.experience.summary);
+          }
+          break;
+
+        case "interests":
+          if (lowerMessage.includes("tech")) {
+            const techInterests = info.interests.filter((interest: string) => 
+              interest.toLowerCase().includes("development") || 
+              interest.toLowerCase().includes("tech") ||
+              interest.toLowerCase().includes("ai")
+            );
+            responses.push(`In the tech world, Furkan is particularly interested in ${techInterests.join(", ")}.`);
+          } else {
+            responses.push(`Furkan is passionate about ${info.interests.join(", ")}.`);
+          }
+          break;
+      }
+    });
+
+    // Enhanced fallback response
+    if (responses.length === 0) {
+      const generalInfo = [
+        `Furkan is a ${info.personal.role} with ${info.experience.years}+ years of experience.`,
+        `He specializes in ${info.skills.frontend.slice(0, 3).join(", ")} for frontend development.`,
+        `You can ask about his skills, projects, experience, or interests.`
+      ];
+      responses.push(generalInfo.join(" "));
+    }
+
+    return responses.join(" ");
+  } catch (error) {
+    console.error('Error in generateContextAwareResponse:', error);
+    throw new Error('Failed to generate response');
+  }
+}
 
 export async function POST(req: Request) {
   try {
+    if (!req.body) {
+      return NextResponse.json(
+        { error: 'Request body is missing' },
+        { status: 400 }
+      );
+    }
+
     const { message } = await req.json();
-    let response = '';
+
+    if (!message || typeof message !== 'string') {
+      return NextResponse.json(
+        { error: 'Message is required and must be a string' },
+        { status: 400 }
+      );
+    }
 
     // Check if the question is about Furkan
     const lowerMessage = message.toLowerCase();
@@ -84,33 +259,34 @@ export async function POST(req: Request) {
       category.some(keyword => lowerMessage.includes(keyword))
     );
 
+    let response: string;
+    
     if (!isAboutFurkan) {
-      response = "I can only answer questions about Furkan. Please ask me something about his skills, projects, experience, or background.";
+      response = "I can only answer questions about Furkan. Please ask me something about his skills, projects, experience, or background. For example, you can ask about his technical skills, recent projects, or work experience.";
     } else {
-      // Generate response based on the message content
-      if (KEYWORDS.personal.some(keyword => lowerMessage.includes(keyword))) {
-        response = `${FURKAN_INFO.personal.name} is a ${FURKAN_INFO.personal.role} based in ${FURKAN_INFO.personal.location}. ${FURKAN_INFO.experience.summary}`;
-      } else if (KEYWORDS.skills.some(keyword => lowerMessage.includes(keyword))) {
-        response = `Furkan is proficient in frontend technologies like ${FURKAN_INFO.skills.frontend.join(', ')}, backend technologies like ${FURKAN_INFO.skills.backend.join(', ')}, and cloud platforms like ${FURKAN_INFO.skills.cloud.join(', ')}.`;
-      } else if (KEYWORDS.projects.some(keyword => lowerMessage.includes(keyword))) {
-        const projectInfo = FURKAN_INFO.projects.map(p => 
-          `${p.name}: ${p.description} (Built with ${p.technologies.join(', ')})`
-        ).join('. ');
-        response = `Here are some of Furkan's notable projects: ${projectInfo}`;
-      } else if (KEYWORDS.experience.some(keyword => lowerMessage.includes(keyword))) {
-        response = FURKAN_INFO.experience.summary;
-      } else if (KEYWORDS.interests.some(keyword => lowerMessage.includes(keyword))) {
-        response = `Furkan is passionate about ${FURKAN_INFO.interests.join(', ')}.`;
-      } else {
-        response = `I understand you're asking about Furkan. He's a ${FURKAN_INFO.personal.role} specializing in modern web development. Would you like to know more about his skills, projects, or experience?`;
+      try {
+        response = generateContextAwareResponse(message, FURKAN_INFO);
+      } catch (error) {
+        console.error('Error generating response:', error);
+        return NextResponse.json(
+          { error: 'Failed to generate response' },
+          { status: 500 }
+        );
       }
+    }
+
+    if (!response) {
+      return NextResponse.json(
+        { error: 'No response generated' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ response });
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in POST handler:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'An error occurred while processing your request' },
       { status: 500 }
     );
   }
