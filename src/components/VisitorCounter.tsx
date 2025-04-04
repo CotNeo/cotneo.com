@@ -39,90 +39,65 @@ const VisitorCounter = () => {
     return false;
   });
 
-  const fetchVisitorData = useCallback(async () => {
+  const fetchVisitorData = async () => {
     try {
-      const now = Date.now();
-      if (now - lastFetchTime < 5000) {
-        return;
-      }
-      setLastFetchTime(now);
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch('/api/visitors', {
-        credentials: 'include',
-        cache: 'no-store'
-      });
-      
+      const response = await fetch('/api/visitors');
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error('Failed to fetch visitor data');
       }
       
-      const data: ApiResponse = await response.json();
+      const data = await response.json();
       
-      if (data.error) {
-        throw new Error(data.error);
+      if (!data || !data.visitors) {
+        throw new Error('Invalid data received from server');
       }
-      
-      setVisitorCount(data.currentCount);
-      setVisitorData(data.history);
-      setActiveVisitors(data.activeVisitors);
+
+      setVisitorData(data.visitors);
+      setVisitorCount(data.totalVisitors || 0);
+      setActiveVisitors(data.activeVisitors || 0);
       setLastUpdate(new Date());
+      setLastFetchTime(Date.now());
       
-      const isNew = !document.cookie.includes('visitorId');
-      setIsNewVisitor(isNew);
-      
-      if (isNew && !hasShownWelcome) {
-        localStorage.setItem('hasShownWelcome', 'true');
-        toast.success('👋 Welcome! You are a new visitor!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          className: 'bg-gray-800 text-white',
-        });
+      // Check if this is a new visitor
+      const visitorId = localStorage.getItem('visitorId');
+      if (!visitorId) {
+        setIsNewVisitor(true);
+        localStorage.setItem('visitorId', data.visitorId);
       }
-      
-      if (data.currentCount >= 100) {
-        toast.success(`🎉 Congratulations! You've reached ${data.currentCount} visitors!`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          className: 'bg-gray-800 text-white',
-        });
-      }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to fetch visitor data');
-      toast.error('Failed to fetch visitor data', {
-        position: "top-right",
-        autoClose: 5000,
-        className: 'bg-red-500 text-white',
-      });
+    } catch (err) {
+      console.error('Error fetching visitor data:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch visitor data');
+      // Set default values in case of error
+      setVisitorCount(0);
+      setActiveVisitors(0);
+      setVisitorData([]);
     } finally {
       setIsLoading(false);
     }
-  }, [lastFetchTime, hasShownWelcome]);
+  };
 
-  const handleConsent = useCallback(async (accepted: boolean) => {
-    if (accepted) {
-      document.cookie = 'consent=true; max-age=31536000; path=/; SameSite=Lax';
-      setConsentGiven(true);
+  const handleConsent = async (accepted: boolean) => {
+    try {
+      setConsentGiven(accepted);
       setShowConsentBanner(false);
-      await fetchVisitorData();
-    } else {
-      setShowConsentBanner(false);
-      setVisitorCount(0);
-      setVisitorData([]);
-      setActiveVisitors(0);
-      setLastUpdate(new Date());
-      setError(null);
+      
+      if (accepted) {
+        localStorage.setItem('consentGiven', 'true');
+        await fetchVisitorData();
+      } else {
+        localStorage.setItem('consentGiven', 'false');
+        setVisitorCount(0);
+        setActiveVisitors(0);
+        setVisitorData([]);
+      }
+    } catch (err) {
+      console.error('Error handling consent:', err);
+      setError('Failed to process your consent. Please try again.');
     }
-  }, [fetchVisitorData]);
+  };
 
   useEffect(() => {
     let isMounted = true;

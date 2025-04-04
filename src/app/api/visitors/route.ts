@@ -7,19 +7,16 @@ const DATA_DIR = path.join(process.cwd(), 'data');
 const VISITORS_FILE = path.join(DATA_DIR, 'visitors.json');
 const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
 
-interface VisitorData {
-  currentCount: number;
-  history: Array<{
-    timestamp: string;
-    count: number;
-    visitorId?: string;
-    ip?: string;
-    userAgent?: string;
-  }>;
+interface SessionData {
+  id: string;
+  lastActive: string;
 }
 
-interface SessionData {
-  [visitorId: string]: number;
+interface VisitorData {
+  timestamp: string;
+  count: number;
+  ip: string;
+  userAgent: string;
 }
 
 // Ziyaretçi oturumlarını saklamak için geçici depolama
@@ -35,16 +32,16 @@ async function ensureDataDir() {
 }
 
 // Oturum verilerini yükle
-async function loadSessions() {
+async function loadSessions(): Promise<SessionData[]> {
   try {
     await ensureDataDir();
     const fileContent = await readFile(SESSIONS_FILE, 'utf-8');
-    const sessions: SessionData = JSON.parse(fileContent);
-    visitorSessions = new Map(Object.entries(sessions));
+    const sessions: SessionData[] = JSON.parse(fileContent);
+    visitorSessions = new Map(sessions.map(session => [session.id, new Date(session.lastActive).getTime()]));
+    return sessions;
   } catch (error) {
     visitorSessions = new Map();
-    // İlk kez çalıştığında dosyayı oluştur
-    await saveSessions();
+    return [];
   }
 }
 
@@ -52,7 +49,10 @@ async function loadSessions() {
 async function saveSessions() {
   try {
     await ensureDataDir();
-    const sessions: SessionData = Object.fromEntries(visitorSessions);
+    const sessions: SessionData[] = Array.from(visitorSessions.entries()).map(([id, lastActive]) => ({
+      id,
+      lastActive: new Date(lastActive).toISOString()
+    }));
     await writeFile(SESSIONS_FILE, JSON.stringify(sessions, null, 2));
   } catch (error) {
     console.error('Session save error:', error);
@@ -60,23 +60,20 @@ async function saveSessions() {
 }
 
 // Ziyaretçi verilerini yükle
-async function loadVisitorData(): Promise<VisitorData> {
+async function loadVisitorData(): Promise<VisitorData[]> {
   try {
     await ensureDataDir();
     const fileContent = await readFile(VISITORS_FILE, 'utf-8');
     return JSON.parse(fileContent);
   } catch (error) {
-    const initialData: VisitorData = {
-      currentCount: 0,
-      history: []
-    };
+    const initialData: VisitorData[] = [];
     await writeFile(VISITORS_FILE, JSON.stringify(initialData, null, 2));
     return initialData;
   }
 }
 
 // Ziyaretçi verilerini kaydet
-async function saveVisitorData(data: VisitorData) {
+async function saveVisitorData(data: VisitorData[]) {
   try {
     await ensureDataDir();
     await writeFile(VISITORS_FILE, JSON.stringify(data, null, 2));
@@ -105,166 +102,92 @@ function calculateActiveVisitors(now: number): number {
   return uniqueIPs.size;
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    // Oturum verilerini yükle
-    await loadSessions();
-
-    // Çerezleri kontrol et
-    const cookieStore = await cookies();
-    let visitorId = cookieStore.get('visitorId')?.value;
-    const consent = cookieStore.get('consent')?.value;
-
-    // Eğer çerez yoksa veya onay verilmemişse yeni bir ID oluştur
-    if (!visitorId || consent !== 'true') {
-      visitorId = generateVisitorId();
-    }
-
-    const now = Date.now();
+    await ensureDataDir();
     
-    // Eski oturumları temizle (5 dakikadan eski)
-    const fiveMinutesAgo = now - 5 * 60 * 1000;
-    for (const [id, timestamp] of visitorSessions.entries()) {
-      if (timestamp < fiveMinutesAgo) {
-        visitorSessions.delete(id);
-      }
-    }
-    await saveSessions();
+    const sessions = await loadSessions() as SessionData[];
+    const visitorData = await loadVisitorData() as VisitorData[];
     
-    // Mevcut verileri oku
-    const data = await loadVisitorData();
+    // Calculate active visitors
+    const now = new Date();
+    const activeVisitors = sessions.filter((session: SessionData) => {
+      const lastActive = new Date(session.lastActive);
+      return now.getTime() - lastActive.getTime() < 5 * 60 * 1000; // 5 minutes
+    }).length;
 
-    // Eğer bu ziyaretçi son 5 dakika içinde geldiyse, sayacı artırma
-    const lastVisit = visitorSessions.get(visitorId);
-    if (lastVisit && (now - lastVisit) < 5 * 60 * 1000) {
-      // Aktif ziyaretçi sayısını hesapla
-      const activeVisitors = calculateActiveVisitors(now);
-      
-      const response = NextResponse.json({
-        ...data,
-        activeVisitors,
-        requiresConsent: consent !== 'true'
-      });
+    // Calculate total visitors
+    const totalVisitors = visitorData.length;
 
-      if (consent === 'true') {
-        response.cookies.set('visitorId', visitorId, {
-          maxAge: 30 * 24 * 60 * 60,
-          path: '/',
-          sameSite: 'lax',
-          secure: process.env.NODE_ENV === 'production',
-          httpOnly: true
-        });
+    // Generate a new visitor ID if needed
+    const visitorId = crypto.randomUUID();
 
-        response.cookies.set('consent', 'true', {
-          maxAge: 365 * 24 * 60 * 60,
-          path: '/',
-          sameSite: 'lax',
-          secure: process.env.NODE_ENV === 'production',
-          httpOnly: true
-        });
-      }
-
-      return response;
-    }
-
-    // Ziyaretçinin son ziyaret zamanını güncelle
-    visitorSessions.set(visitorId, now);
-    await saveSessions();
-
-    // Sayaç ve geçmişi güncelle
-    data.currentCount += 1;
-    const timestamp = new Date().toISOString();
-    data.history.push({
-      timestamp,
-      count: data.currentCount,
-      visitorId
-    });
-
-    // Son 24 saatlik veriyi tut
-    const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
-    data.history = data.history.filter(item => new Date(item.timestamp) > oneDayAgo);
-
-    // Verileri kaydet
-    await saveVisitorData(data);
-
-    // Aktif ziyaretçi sayısını hesapla
-    const activeVisitors = calculateActiveVisitors(now);
-
-    const response = NextResponse.json({
-      ...data,
+    return NextResponse.json({
+      visitors: visitorData,
+      totalVisitors,
       activeVisitors,
-      requiresConsent: consent !== 'true'
+      visitorId,
+      lastUpdate: new Date().toISOString()
     });
-
-    if (consent === 'true') {
-      response.cookies.set('visitorId', visitorId, {
-        maxAge: 30 * 24 * 60 * 60,
-        path: '/',
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true
-      });
-
-      response.cookies.set('consent', 'true', {
-        maxAge: 365 * 24 * 60 * 60,
-        path: '/',
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true
-      });
-    }
-
-    return response;
   } catch (error) {
-    console.error('Error handling visitor count:', error);
+    console.error('Error in GET /api/visitors:', error);
     return NextResponse.json(
       { 
-        error: 'Failed to update visitor count',
-        currentCount: 0,
-        history: [],
+        error: 'Failed to fetch visitor data',
+        visitors: [],
+        totalVisitors: 0,
         activeVisitors: 0,
-        requiresConsent: true
+        lastUpdate: new Date().toISOString()
       },
-      { status: 200 } // 500 yerine 200 döndür, client tarafında daha iyi ele alınabilir
+      { status: 200 }
     );
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { ip, userAgent } = await req.json();
-
+    const { ip, userAgent } = await request.json();
+    
     if (!ip || !userAgent) {
       return NextResponse.json(
-        { error: 'IP ve User-Agent gerekli' },
+        { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    const data = await loadVisitorData();
-
-    // Yeni ziyaretçi kaydı ekle
-    const timestamp = new Date().toISOString();
-    data.history.push({
-      timestamp,
-      count: data.currentCount + 1,
+    await ensureDataDir();
+    
+    const visitorData = await loadVisitorData() as VisitorData[];
+    const now = new Date();
+    
+    // Add new visitor entry
+    visitorData.push({
+      timestamp: now.toISOString(),
+      count: visitorData.length + 1,
       ip,
       userAgent
     });
 
-    // Son 24 saatlik veriyi tut
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    data.history = data.history.filter(item => new Date(item.timestamp) > oneDayAgo);
+    // Keep only last 24 hours of data
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const filteredData = visitorData.filter((item: VisitorData) => 
+      new Date(item.timestamp) >= oneDayAgo
+    );
 
-    // Verileri kaydet
-    await saveVisitorData(data);
+    await saveVisitorData(filteredData);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ 
+      success: true,
+      message: 'Visitor data updated successfully'
+    });
   } catch (error) {
-    console.error('Error saving visitor data:', error);
+    console.error('Error in POST /api/visitors:', error);
     return NextResponse.json(
-      { error: 'Failed to save visitor data' },
-      { status: 200 } // 500 yerine 200 döndür
+      { 
+        error: 'Failed to update visitor data',
+        success: false
+      },
+      { status: 200 }
     );
   }
 } 
