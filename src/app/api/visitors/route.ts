@@ -46,7 +46,6 @@ function generateVisitorId(): string {
 
 // Aktif ziyaretçi sayısını hesapla
 function calculateActiveVisitors(now: number): number {
-  // Son 5 dakika içinde gelen benzersiz IP'leri say
   const fiveMinutesAgo = now - 5 * 60 * 1000;
   const uniqueIPs = new Set<string>();
   
@@ -196,6 +195,38 @@ export async function GET(request: Request) {
         activeVisitors: 0,
         requiresConsent: true
       },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const { ip, userAgent } = await req.json();
+
+    if (!ip || !userAgent) {
+      return NextResponse.json(
+        { error: 'IP ve User-Agent gerekli' },
+        { status: 400 }
+      );
+    }
+
+    const client = await getMongoClient();
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+
+    // Ziyaretçi bilgilerini kaydet
+    await collection.insertOne({
+      ip,
+      userAgent,
+      timestamp: new Date()
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('MongoDB Error:', error);
+    return NextResponse.json(
+      { error: 'Veritabanına erişilemiyor' },
       { status: 500 }
     );
   }
