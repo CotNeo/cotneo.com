@@ -12,6 +12,8 @@ interface VisitorData {
     timestamp: string;
     count: number;
     visitorId?: string;
+    ip?: string;
+    userAgent?: string;
   }>;
 }
 
@@ -211,22 +213,39 @@ export async function POST(req: Request) {
       );
     }
 
-    const client = await getMongoClient();
-    const db = client.db(DB_NAME);
-    const collection = db.collection(COLLECTION_NAME);
+    // Mevcut verileri oku
+    let data: VisitorData;
+    try {
+      const fileContent = await readFile(VISITORS_FILE, 'utf-8');
+      data = JSON.parse(fileContent);
+    } catch (error) {
+      data = {
+        currentCount: 0,
+        history: []
+      };
+    }
 
-    // Ziyaretçi bilgilerini kaydet
-    await collection.insertOne({
+    // Yeni ziyaretçi kaydı ekle
+    const timestamp = new Date().toISOString();
+    data.history.push({
+      timestamp,
+      count: data.currentCount + 1,
       ip,
-      userAgent,
-      timestamp: new Date()
+      userAgent
     });
+
+    // Son 24 saatlik veriyi tut
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    data.history = data.history.filter(item => new Date(item.timestamp) > oneDayAgo);
+
+    // Verileri kaydet
+    await writeFile(VISITORS_FILE, JSON.stringify(data, null, 2));
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('MongoDB Error:', error);
+    console.error('Error saving visitor data:', error);
     return NextResponse.json(
-      { error: 'Veritabanına erişilemiyor' },
+      { error: 'Failed to save visitor data' },
       { status: 500 }
     );
   }
