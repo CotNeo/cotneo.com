@@ -32,28 +32,23 @@ const VisitorCounter = () => {
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
   const [showConsentBanner, setShowConsentBanner] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false);
-  const [hasShownWelcome, setHasShownWelcome] = useState(() => {
+  const [hasShownWelcome] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('hasShownWelcome') === 'true';
     }
     return false;
   });
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const fetchVisitorData = useCallback(async () => {
     try {
-      console.log('🔄 fetchVisitorData başladı');
       const now = Date.now();
       if (now - lastFetchTime < 5000) {
-        console.log('⏱️ Son istekten 5 saniye geçmedi, fetch iptal edildi');
         return;
       }
       setLastFetchTime(now);
-
       setIsLoading(true);
       setError(null);
       
-      console.log('🌐 API isteği yapılıyor...');
       const response = await fetch('/api/visitors', {
         credentials: 'include',
         cache: 'no-store'
@@ -64,29 +59,20 @@ const VisitorCounter = () => {
       }
       
       const data: ApiResponse = await response.json();
-      console.log('📦 API yanıtı alındı:', data);
       
       if (data.error) {
         throw new Error(data.error);
       }
       
-      console.log('🔄 State güncellemeleri başlıyor');
-      const updates = () => {
-        setVisitorCount(data.currentCount);
-        setVisitorData(data.history);
-        setActiveVisitors(data.activeVisitors);
-        setLastUpdate(new Date());
-      };
-      updates();
-      console.log('✅ State güncellemeleri tamamlandı');
+      setVisitorCount(data.currentCount);
+      setVisitorData(data.history);
+      setActiveVisitors(data.activeVisitors);
+      setLastUpdate(new Date());
       
       const isNew = !document.cookie.includes('visitorId');
-      console.log('🍪 Yeni ziyaretçi kontrolü:', isNew);
       setIsNewVisitor(isNew);
       
       if (isNew && !hasShownWelcome) {
-        console.log('👋 Hoşgeldiniz mesajı gösteriliyor');
-        setHasShownWelcome(true);
         localStorage.setItem('hasShownWelcome', 'true');
         toast.success('👋 Welcome! You are a new visitor!', {
           position: "top-right",
@@ -100,7 +86,6 @@ const VisitorCounter = () => {
       }
       
       if (data.currentCount >= 100) {
-        console.log('🎉 100 ziyaretçi kutlaması');
         toast.success(`🎉 Congratulations! You've reached ${data.currentCount} visitors!`, {
           position: "top-right",
           autoClose: 5000,
@@ -112,7 +97,6 @@ const VisitorCounter = () => {
         });
       }
     } catch (error) {
-      console.error('❌ Veri çekme hatası:', error);
       setError(error instanceof Error ? error.message : 'Failed to fetch visitor data');
       toast.error('Failed to fetch visitor data', {
         position: "top-right",
@@ -121,31 +105,16 @@ const VisitorCounter = () => {
       });
     } finally {
       setIsLoading(false);
-      console.log('🏁 fetchVisitorData tamamlandı');
     }
   }, [lastFetchTime, hasShownWelcome]);
 
-  const handleConsent = useCallback((accepted: boolean) => {
-    console.log('🎯 handleConsent başladı, accepted:', accepted);
-    console.log('📊 Mevcut state durumu:', {
-      isProcessing,
-      showConsentBanner,
-      consentGiven
-    });
-
-    setIsLoading(false);
-
+  const handleConsent = useCallback(async (accepted: boolean) => {
     if (accepted) {
-      console.log('✅ Çerez onayı kabul edildi');
-      console.log('🍪 Çerez ayarlanıyor...');
       document.cookie = 'consent=true; max-age=31536000; path=/; SameSite=Lax';
-      
-      console.log('🔄 State güncellemeleri başlıyor');
       setConsentGiven(true);
       setShowConsentBanner(false);
-      fetchVisitorData();
+      await fetchVisitorData();
     } else {
-      console.log('❌ Çerez onayı reddedildi');
       setShowConsentBanner(false);
       setVisitorCount(0);
       setVisitorData([]);
@@ -153,36 +122,21 @@ const VisitorCounter = () => {
       setLastUpdate(new Date());
       setError(null);
     }
-    
-    console.log('🏁 handleConsent tamamlandı');
   }, [fetchVisitorData]);
 
   useEffect(() => {
     let isMounted = true;
-    console.log('🔄 useEffect başladı');
 
     const checkConsent = async () => {
-      console.log('🔍 Çerez kontrolü yapılıyor');
       const consent = document.cookie.includes('consent=true');
-      console.log('🍪 Çerez durumu:', consent);
       
-      if (!isMounted) {
-        console.log('⚠️ Component unmount olmuş, işlem iptal');
-        return;
-      }
-
-      if (consentGiven) {
-        console.log('✅ consentGiven zaten true, işlem atlanıyor');
-        return;
-      }
+      if (!isMounted) return;
 
       if (consent) {
-        console.log('✅ Çerez onayı bulundu');
         setConsentGiven(true);
         setShowConsentBanner(false);
         await fetchVisitorData();
       } else {
-        console.log('❌ Çerez onayı bulunamadı, banner gösteriliyor');
         setShowConsentBanner(true);
         setIsLoading(false);
       }
@@ -191,16 +145,13 @@ const VisitorCounter = () => {
     checkConsent();
     
     const interval = setInterval(() => {
-      console.log('⏰ Interval tetiklendi');
       const consent = document.cookie.includes('consent=true');
       if (consent && isMounted && consentGiven) {
-        console.log('🔄 Periyodik veri güncelleme');
         fetchVisitorData();
       }
     }, 30000);
-    
+
     return () => {
-      console.log('🧹 useEffect cleanup');
       isMounted = false;
       clearInterval(interval);
     };

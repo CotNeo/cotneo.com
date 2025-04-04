@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { writeFile, readFile } from 'fs/promises';
+import { writeFile, readFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { cookies } from 'next/headers';
 
-const VISITORS_FILE = path.join(process.cwd(), 'public', 'visitors.json');
-const SESSIONS_FILE = path.join(process.cwd(), 'public', 'sessions.json');
+const DATA_DIR = path.join(process.cwd(), 'data');
+const VISITORS_FILE = path.join(DATA_DIR, 'visitors.json');
+const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
 
 interface VisitorData {
   currentCount: number;
@@ -24,21 +25,65 @@ interface SessionData {
 // Ziyaretçi oturumlarını saklamak için geçici depolama
 let visitorSessions: Map<string, number> = new Map();
 
+// Dosya sistemini hazırla
+async function ensureDataDir() {
+  try {
+    await mkdir(DATA_DIR, { recursive: true });
+  } catch (error) {
+    // Klasör zaten varsa hata vermez
+  }
+}
+
 // Oturum verilerini yükle
 async function loadSessions() {
   try {
+    await ensureDataDir();
     const fileContent = await readFile(SESSIONS_FILE, 'utf-8');
     const sessions: SessionData = JSON.parse(fileContent);
     visitorSessions = new Map(Object.entries(sessions));
   } catch (error) {
     visitorSessions = new Map();
+    // İlk kez çalıştığında dosyayı oluştur
+    await saveSessions();
   }
 }
 
 // Oturum verilerini kaydet
 async function saveSessions() {
-  const sessions: SessionData = Object.fromEntries(visitorSessions);
-  await writeFile(SESSIONS_FILE, JSON.stringify(sessions, null, 2));
+  try {
+    await ensureDataDir();
+    const sessions: SessionData = Object.fromEntries(visitorSessions);
+    await writeFile(SESSIONS_FILE, JSON.stringify(sessions, null, 2));
+  } catch (error) {
+    console.error('Session save error:', error);
+  }
+}
+
+// Ziyaretçi verilerini yükle
+async function loadVisitorData(): Promise<VisitorData> {
+  try {
+    await ensureDataDir();
+    const fileContent = await readFile(VISITORS_FILE, 'utf-8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    const initialData: VisitorData = {
+      currentCount: 0,
+      history: []
+    };
+    await writeFile(VISITORS_FILE, JSON.stringify(initialData, null, 2));
+    return initialData;
+  }
+}
+
+// Ziyaretçi verilerini kaydet
+async function saveVisitorData(data: VisitorData) {
+  try {
+    await ensureDataDir();
+    await writeFile(VISITORS_FILE, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('Visitor data save error:', error);
+    throw error;
+  }
 }
 
 // Benzersiz ziyaretçi ID'si oluştur
@@ -87,18 +132,7 @@ export async function GET(request: Request) {
     await saveSessions();
     
     // Mevcut verileri oku
-    let data: VisitorData;
-    try {
-      const fileContent = await readFile(VISITORS_FILE, 'utf-8');
-      data = JSON.parse(fileContent);
-    } catch (error) {
-      data = {
-        currentCount: 0,
-        history: []
-      };
-      // Dosya yoksa oluştur
-      await writeFile(VISITORS_FILE, JSON.stringify(data, null, 2));
-    }
+    const data = await loadVisitorData();
 
     // Eğer bu ziyaretçi son 5 dakika içinde geldiyse, sayacı artırma
     const lastVisit = visitorSessions.get(visitorId);
@@ -112,20 +146,17 @@ export async function GET(request: Request) {
         requiresConsent: consent !== 'true'
       });
 
-      // Çerez onayı varsa çerezleri ayarla
       if (consent === 'true') {
-        // Ziyaretçi ID çerezi
         response.cookies.set('visitorId', visitorId, {
-          maxAge: 30 * 24 * 60 * 60, // 30 gün
+          maxAge: 30 * 24 * 60 * 60,
           path: '/',
           sameSite: 'lax',
           secure: process.env.NODE_ENV === 'production',
           httpOnly: true
         });
 
-        // Onay çerezi
         response.cookies.set('consent', 'true', {
-          maxAge: 365 * 24 * 60 * 60, // 1 yıl
+          maxAge: 365 * 24 * 60 * 60,
           path: '/',
           sameSite: 'lax',
           secure: process.env.NODE_ENV === 'production',
@@ -154,7 +185,7 @@ export async function GET(request: Request) {
     data.history = data.history.filter(item => new Date(item.timestamp) > oneDayAgo);
 
     // Verileri kaydet
-    await writeFile(VISITORS_FILE, JSON.stringify(data, null, 2));
+    await saveVisitorData(data);
 
     // Aktif ziyaretçi sayısını hesapla
     const activeVisitors = calculateActiveVisitors(now);
@@ -165,20 +196,17 @@ export async function GET(request: Request) {
       requiresConsent: consent !== 'true'
     });
 
-    // Çerez onayı varsa çerezleri ayarla
     if (consent === 'true') {
-      // Ziyaretçi ID çerezi
       response.cookies.set('visitorId', visitorId, {
-        maxAge: 30 * 24 * 60 * 60, // 30 gün
+        maxAge: 30 * 24 * 60 * 60,
         path: '/',
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true
       });
 
-      // Onay çerezi
       response.cookies.set('consent', 'true', {
-        maxAge: 365 * 24 * 60 * 60, // 1 yıl
+        maxAge: 365 * 24 * 60 * 60,
         path: '/',
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
@@ -197,7 +225,7 @@ export async function GET(request: Request) {
         activeVisitors: 0,
         requiresConsent: true
       },
-      { status: 500 }
+      { status: 200 } // 500 yerine 200 döndür, client tarafında daha iyi ele alınabilir
     );
   }
 }
@@ -213,17 +241,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Mevcut verileri oku
-    let data: VisitorData;
-    try {
-      const fileContent = await readFile(VISITORS_FILE, 'utf-8');
-      data = JSON.parse(fileContent);
-    } catch (error) {
-      data = {
-        currentCount: 0,
-        history: []
-      };
-    }
+    const data = await loadVisitorData();
 
     // Yeni ziyaretçi kaydı ekle
     const timestamp = new Date().toISOString();
@@ -239,14 +257,14 @@ export async function POST(req: Request) {
     data.history = data.history.filter(item => new Date(item.timestamp) > oneDayAgo);
 
     // Verileri kaydet
-    await writeFile(VISITORS_FILE, JSON.stringify(data, null, 2));
+    await saveVisitorData(data);
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error saving visitor data:', error);
     return NextResponse.json(
       { error: 'Failed to save visitor data' },
-      { status: 500 }
+      { status: 200 } // 500 yerine 200 döndür
     );
   }
 } 
