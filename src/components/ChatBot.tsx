@@ -198,7 +198,7 @@ const ChatBot = () => {
                   {suggestions.map((question, index) => (
                     <button
                       key={index}
-                      onClick={() => handleSubmit(null, question)}
+                      onClick={() => handleSuggestionClick(question)}
                       className="text-sm bg-gray-800 text-gray-300 px-3 py-1 rounded-full hover:bg-gray-700 transition-colors"
                     >
                       {question}
