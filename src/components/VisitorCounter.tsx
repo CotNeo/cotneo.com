@@ -32,14 +32,16 @@ const VisitorCounter = () => {
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
   const [showConsentBanner, setShowConsentBanner] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false);
-  const [hasShownWelcome] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('hasShownWelcome') === 'true';
-    }
-    return false;
-  });
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
 
-  const fetchVisitorData = async () => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hasShown = localStorage.getItem('hasShownWelcome') === 'true';
+      setHasShownWelcome(hasShown);
+    }
+  }, []);
+
+  const fetchVisitorData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -70,16 +72,15 @@ const VisitorCounter = () => {
     } catch (err) {
       console.error('Error fetching visitor data:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch visitor data');
-      // Set default values in case of error
       setVisitorCount(0);
       setActiveVisitors(0);
       setVisitorData([]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const handleConsent = async (accepted: boolean) => {
+  const handleConsent = useCallback(async (accepted: boolean) => {
     try {
       setConsentGiven(accepted);
       setShowConsentBanner(false);
@@ -97,40 +98,23 @@ const VisitorCounter = () => {
       console.error('Error handling consent:', err);
       setError('Failed to process your consent. Please try again.');
     }
-  };
+  }, [fetchVisitorData]);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const checkConsent = async () => {
-      const consent = document.cookie.includes('consent=true');
-      
-      if (!isMounted) return;
-
-      if (consent) {
-        setConsentGiven(true);
-        setShowConsentBanner(false);
-        await fetchVisitorData();
-      } else {
-        setShowConsentBanner(true);
-        setIsLoading(false);
+    const checkConsent = () => {
+      if (typeof window !== 'undefined') {
+        const consent = localStorage.getItem('consentGiven');
+        if (consent === 'true') {
+          setConsentGiven(true);
+          fetchVisitorData();
+        } else if (consent === null) {
+          setShowConsentBanner(true);
+        }
       }
     };
 
     checkConsent();
-    
-    const interval = setInterval(() => {
-      const consent = document.cookie.includes('consent=true');
-      if (consent && isMounted && consentGiven) {
-        fetchVisitorData();
-      }
-    }, 30000);
-
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, [fetchVisitorData, consentGiven]);
+  }, [fetchVisitorData]);
 
   const getFilteredData = () => {
     const hours = timeRange === '24h' ? 24 : timeRange === '12h' ? 12 : 6;
