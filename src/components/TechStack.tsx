@@ -34,6 +34,7 @@ const technologies: TechnologiesType = {
     { name: 'Tailwind', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg' },
     { name: 'React Bootstrap', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/reactbootstrap/reactbootstrap-original.svg' },
     { name: 'React Router', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/reactrouter/reactrouter-original.svg' },
+    { name: 'Axios', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/axios/axios-plain-wordmark.svg' },
   ],
   Backend: [
     { name: 'Node.js', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg' },
@@ -45,7 +46,6 @@ const technologies: TechnologiesType = {
     { name: 'GraphQL', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/graphql/graphql-plain.svg' },
     { name: 'Socket.IO', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/socketio/socketio-original.svg' },
     { name: 'Mongoose', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/mongoose/mongoose-original.svg' },
-    { name: 'JSON', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/json/json-original.svg' },
   ],
   'Development & Testing': [
     { name: 'Git', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg' },
@@ -54,7 +54,6 @@ const technologies: TechnologiesType = {
     { name: 'Postman', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/postman/postman-original.svg' },
     { name: 'Vite', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/vitejs/vitejs-original.svg' },
     { name: 'Babel', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/babel/babel-original.svg' },
-    { name: 'Axios', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/axios/axios-plain-wordmark.svg' },
   ],
   'Cloud & DevOps': [
     { name: 'AWS', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/amazonwebservices/amazonwebservices-original-wordmark.svg' },
@@ -62,6 +61,7 @@ const technologies: TechnologiesType = {
     { name: 'Vercel', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/vercel/vercel-original-wordmark.svg' },
     { name: 'Heroku', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/heroku/heroku-original-wordmark.svg' },
     { name: 'Netlify', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/netlify/netlify-original-wordmark.svg' },
+    { name: 'Nginx', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg' },
   ],
 };
 

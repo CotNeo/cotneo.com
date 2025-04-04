@@ -23,6 +23,7 @@ const Navbar = () => {
     { href: '#about', label: 'About' },
     { href: '#tech-stack', label: 'Tech Stack' },
     { href: '#projects', label: 'Projects' },
+    { href: '#visitors', label: 'Visitors' },
     { href: '#github', label: 'GitHub' },
     { href: '#certificates', label: 'Certificates' },
   ];

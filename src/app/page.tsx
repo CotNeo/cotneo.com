@@ -8,6 +8,9 @@ import Certificates from '@/components/Certificates';
 import Footer from '@/components/Footer';
 import Background3D from '@/components/Background3D';
 import ChatBot from '@/components/ChatBot';
+import VisitorCounter from '@/components/VisitorCounter';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   return (
@@ -20,9 +23,13 @@ export default function Home() {
         <TechStack />
         <Projects />
         <GithubStatus />
+        <div id="visitors">
+          <VisitorCounter />
+        </div>
         <Certificates />
         <Footer />
         <ChatBot />
+        <ToastContainer />
       </div>
     </main>
   );

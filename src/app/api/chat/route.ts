@@ -1,238 +1,166 @@
 import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import { kv } from '@vercel/kv';
 
-const FURKAN_INFO = {
-  personal: {
-    name: "Furkan",
-    role: "Full Stack Developer",
-    location: "Turkey",
-    education: "Computer Engineering",
-    languages: ["Turkish", "English"],
-    summary: "A passionate Full Stack Developer specializing in MERN stack and modern web technologies"
-  },
-  skills: {
-    frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "React Bootstrap", "Redux", "Zustand", "Recoil"],
-    backend: ["Node.js", "Express", "GraphQL", "RESTful APIs", "WebSockets"],
-    database: ["MongoDB", "PostgreSQL", "Mongoose"],
-    cloud: ["AWS", "Vercel", "Docker", "Netlify", "CI/CD Pipelines"],
-    testing: ["Jest", "Cypress", "Supertest"],
-    tools: ["Git", "VS Code", "Postman", "Vite", "Babel", "npm"]
-  },
-  projects: [
-    {
-      name: "Personal Portfolio",
-      description: "A modern portfolio website with 3D animations and AI chatbot",
-      technologies: ["Next.js", "TypeScript", "Three.js", "Tailwind CSS"],
-      features: ["3D Animations", "AI Chat Assistant", "Responsive Design", "Dark Mode"],
-      link: "https://cotneo.com"
-    },
-    {
-      name: "Full Stack Applications",
-      description: "Various MERN stack applications with modern features",
-      technologies: ["React", "Node.js", "MongoDB", "Express", "GraphQL"],
-      features: ["RESTful APIs", "GraphQL Integration", "Real-time Updates", "Authentication"],
-      link: "https://github.com/CotNeo"
-    }
-  ],
-  experience: {
-    current: "Full Stack Developer",
-    years: 3,
-    summary: "3+ years of experience in full-stack development, specializing in MERN stack and modern web technologies. Currently preparing for AWS Developer Associate certification.",
-    highlights: [
-      "Expertise in MERN Stack Development",
-      "Building Scalable & Performant Applications",
-      "Implementing Microservices Architecture",
-      "Web Performance Optimization",
-      "DevOps & Automation"
-    ],
-    companies: [
-      {
-        name: "freelancer",
-        role: "Full Stack Developer",
-        period: "2021-present",
-        achievements: [
-          "Developed multiple full-stack applications",
-          "Implemented modern state management solutions",
-          "Optimized application performance",
-          "Integrated AI-driven features"
-        ]
-      }
-    ]
-  },
-  interests: [
-    "Web Development",
-    "System Design",
-    "Microservices",
-    "AI-Driven Applications",
-    "DevOps Automation",
-    "Cloud Computing",
-    "Web Performance",
-    "Open Source"
-  ],
-  certifications: [
-    {
-      name: "Full Stack Open Certificate",
-      issuer: "University of Helsinki",
-      link: "https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/4122575dc0cda9c0d7ae61c0476a0d16"
-    },
-    {
-      name: "Full Stack GraphQL Certificate",
-      issuer: "University of Helsinki",
-      link: "https://studies.cs.helsinki.fi/stats/api/certificate/fs-graphql/en/9a2e150918ec8fa50aaae6c6b5c1f93d"
-    },
-    {
-      name: "AWS Developer Associate",
-      status: "In Progress"
-    }
-  ]
+// KV bağlantı kontrolü
+const isKvEnabled = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+
+// OpenAI istemcisi
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Rate limiting için sabitler
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 saat
+const MAX_REQUESTS_PER_HOUR = 100;
+
+// Cache için sabitler
+const CACHE_TTL = 60 * 60; // 1 saat
+
+const SYSTEM_PROMPT = `You are Furkan's AI assistant, designed to have engaging and natural conversations about his professional background. While maintaining professionalism, you can be conversational, friendly, and occasionally add a touch of personality to your responses.
+
+Key Guidelines:
+1. Be conversational but professional
+2. Use natural language and occasional humor when appropriate
+3. Keep responses concise but informative
+4. Show enthusiasm about Furkan's work and achievements
+5. Be helpful and encouraging
+6. Maintain context awareness in multi-turn conversations
+
+About Furkan:
+Personal:
+- Name: Furkan Akar
+- Role: Full Stack Developer
+- Location: Turkey
+- Education: Computer Engineering
+- Languages: Turkish, English
+- Personality: Passionate about technology, always learning, and enjoys solving complex problems
+- Summary: A passionate Full Stack Developer specializing in MERN stack and modern web technologies
+
+Skills:
+- Frontend: React, Next.js, TypeScript, Tailwind CSS, React Bootstrap, Redux, Zustand, Recoil
+- Backend: Node.js, Express, GraphQL, RESTful APIs, WebSockets
+- Database: MongoDB, PostgreSQL, Mongoose
+- Cloud: AWS, Vercel, Docker, Netlify, CI/CD Pipelines
+- Testing: Jest, Cypress, Supertest
+- Tools: Git, VS Code, Postman, Vite, Babel, npm
+
+Projects:
+1. Personal Portfolio
+   - Description: A modern portfolio website with 3D animations and AI chatbot
+   - Technologies: Next.js, TypeScript, Three.js, Tailwind CSS
+   - Features: 3D Animations, AI Chat Assistant, Responsive Design, Dark Mode
+   - Link: https://cotneo.com
+   - Fun Fact: The 3D background was inspired by modern tech aesthetics
+
+2. Full Stack Applications
+   - Description: Various MERN stack applications with modern features
+   - Technologies: React, Node.js, MongoDB, Express, GraphQL
+   - Features: RESTful APIs, GraphQL Integration, Real-time Updates, Authentication
+   - Link: https://github.com/CotNeo
+   - Fun Fact: Some projects include AI-powered features
+
+Experience:
+- Current Role: Full Stack Developer
+- Years of Experience: 3+
+- Summary: 3+ years of experience in full-stack development, specializing in MERN stack and modern web technologies. Currently preparing for AWS Developer Associate certification.
+- Highlights: Expertise in MERN Stack Development, Building Scalable & Performant Applications, Implementing Microservices Architecture, Web Performance Optimization, DevOps & Automation
+- Fun Fact: Started as a self-taught developer and now working on complex enterprise applications
+
+Interests:
+- Web Development
+- System Design
+- Microservices
+- AI-Driven Applications
+- DevOps Automation
+- Cloud Computing
+- Web Performance
+- Open Source
+- Fun Fact: Particularly interested in the intersection of AI and web development
+
+Certifications:
+1. Full Stack Open Certificate (University of Helsinki)
+2. Full Stack GraphQL Certificate (University of Helsinki)
+3. AWS Developer Associate (In Progress)
+- Fun Fact: The Full Stack Open course was completed with distinction
+
+Response Style:
+- Use a friendly, conversational tone
+- Add relevant emojis occasionally (but not too many)
+- Share interesting facts or anecdotes when relevant
+- Be enthusiastic about technology and development
+- Use analogies to explain complex concepts
+- Show personality while maintaining professionalism
+- Keep responses concise but engaging
+
+Remember: While you can be creative and engaging, always stay within the context of Furkan's professional background and experience. If asked about topics outside this scope, politely redirect the conversation back to relevant topics.`;
+
+// Fallback yanıtlar
+const FALLBACK_RESPONSES = {
+  skills: "Furkan is a Full Stack Developer with expertise in React, Node.js, and modern web technologies. He specializes in building scalable applications using the MERN stack.",
+  projects: "Furkan has worked on various projects including a personal portfolio website with 3D animations and AI chatbot, as well as full-stack applications using MERN stack.",
+  experience: "With 3+ years of experience, Furkan specializes in full-stack development, focusing on MERN stack and modern web technologies. He's currently preparing for AWS Developer Associate certification.",
+  default: "I can tell you about Furkan's skills, projects, and experience. What would you like to know specifically?"
 };
 
-const KEYWORDS = {
-  personal: ["who", "background", "education", "language", "about", "where", "location", "tell", "what", "how", "when"],
-  skills: ["skill", "technology", "tech", "stack", "frontend", "backend", "database", "cloud", "tool", "use", "work", "know", "can"],
-  projects: ["project", "portfolio", "work", "built", "create", "develop", "application", "make", "done", "show", "demo"],
-  experience: ["experience", "job", "work", "company", "achievement", "role", "position", "year", "career", "professional"],
-  interests: ["interest", "passion", "hobby", "like", "enjoy", "focus", "love", "prefer", "favorite"]
-};
-
-function generateContextAwareResponse(message: string, info: any): string {
+// Rate limiting kontrolü
+async function checkRateLimit(ip: string): Promise<boolean> {
+  if (!isKvEnabled) return true;
+  
   try {
-    const lowerMessage = message.toLowerCase();
-    let responses: string[] = [];
-    let context: string[] = [];
-
-    // Improved context gathering
-    if (lowerMessage.includes("example") || lowerMessage.includes("specific") || lowerMessage.includes("like")) {
-      context.push("specific");
+    const key = `rate_limit:${ip}`;
+    const current = await kv.get<number>(key) || 0;
+    
+    if (current >= MAX_REQUESTS_PER_HOUR) {
+      return false;
     }
-    if (lowerMessage.includes("detail") || lowerMessage.includes("more") || lowerMessage.includes("tell") || lowerMessage.includes("explain")) {
-      context.push("detailed");
-    }
-    if (lowerMessage.includes("latest") || lowerMessage.includes("recent") || lowerMessage.includes("current") || lowerMessage.includes("now")) {
-      context.push("recent");
-    }
-
-    // Check for general questions
-    if (lowerMessage.includes("hi") || lowerMessage.includes("hello") || lowerMessage.includes("hey")) {
-      responses.push("Hello! I'm here to tell you about Furkan. What would you like to know?");
-      return responses.join(" ");
-    }
-
-    // More flexible keyword matching
-    const matchedCategories = Object.entries(KEYWORDS).filter(([_, keywords]) =>
-      keywords.some(keyword => lowerMessage.includes(keyword))
-    ).map(([category]) => category);
-
-    // If no exact matches, try to infer the category from the question
-    if (matchedCategories.length === 0) {
-      if (lowerMessage.includes("do") || lowerMessage.includes("can") || lowerMessage.includes("what")) {
-        matchedCategories.push("skills");
-      }
-      if (lowerMessage.includes("made") || lowerMessage.includes("created")) {
-        matchedCategories.push("projects");
-      }
-      if (lowerMessage.includes("worked") || lowerMessage.includes("doing")) {
-        matchedCategories.push("experience");
-      }
-    }
-
-    // Generate responses for each matched category
-    matchedCategories.forEach(category => {
-      switch (category) {
-        case "personal":
-          if (context.includes("detailed")) {
-            responses.push(`${info.personal.name} is a ${info.personal.role} based in ${info.personal.location}. With a background in ${info.personal.education}, he is ${info.personal.summary}. He is fluent in ${info.personal.languages.join(" and ")}.`);
-          } else {
-            responses.push(`${info.personal.name} is a ${info.personal.role} based in ${info.personal.location}.`);
-          }
-          break;
-
-        case "skills":
-          if (lowerMessage.includes("frontend")) {
-            const frontendSkills = info.skills.frontend;
-            responses.push(context.includes("detailed")
-              ? `In frontend development, Furkan specializes in ${frontendSkills.slice(0, -1).join(", ")} and ${frontendSkills.slice(-1)}. He has extensive experience building responsive and performant web applications using these technologies.`
-              : `Frontend skills include ${frontendSkills.join(", ")}.`);
-          } else if (lowerMessage.includes("backend")) {
-            const backendSkills = info.skills.backend;
-            responses.push(context.includes("detailed")
-              ? `For backend development, Furkan works with ${backendSkills.join(", ")}. He has built scalable APIs and microservices using these technologies.`
-              : `Backend technologies include ${backendSkills.join(", ")}.`);
-          } else if (lowerMessage.includes("database")) {
-            responses.push(`Furkan has experience with databases like ${info.skills.database.join(", ")}.`);
-          } else if (lowerMessage.includes("cloud")) {
-            responses.push(`In cloud technologies, Furkan works with ${info.skills.cloud.join(", ")}.`);
-          } else {
-            responses.push(context.includes("detailed")
-              ? `Furkan's technical expertise spans frontend (${info.skills.frontend.join(", ")}), backend (${info.skills.backend.join(", ")}), databases (${info.skills.database.join(", ")}), and cloud platforms (${info.skills.cloud.join(", ")}).`
-              : `Technical skills include frontend and backend development, database management, and cloud technologies.`);
-          }
-          break;
-
-        case "projects":
-          const relevantProjects = info.projects.filter((p: any) => 
-            lowerMessage.includes(p.name.toLowerCase()) || 
-            p.technologies.some((tech: string) => lowerMessage.includes(tech.toLowerCase()))
-          );
-
-          if (relevantProjects.length > 0) {
-            relevantProjects.forEach((project: any) => {
-              if (context.includes("detailed")) {
-                responses.push(`${project.name}: ${project.description}. Built using ${project.technologies.join(", ")}. Key features include ${project.features.join(", ")}. You can check it out at ${project.link}`);
-              } else {
-                responses.push(`${project.name}: ${project.description}. Built with ${project.technologies.join(", ")}.`);
-              }
-            });
-          } else if (context.includes("recent")) {
-            const latestProject = info.projects[0];
-            responses.push(`Most recent project: ${latestProject.name} - ${latestProject.description}`);
-          } else {
-            responses.push(`Notable projects include: ${info.projects.map((p: any) => p.name).join(", ")}.`);
-          }
-          break;
-
-        case "experience":
-          if (context.includes("detailed")) {
-            responses.push(info.experience.summary);
-            responses.push(`Current role: ${info.experience.current}`);
-            responses.push(`Key achievements: ${info.experience.highlights.join(", ")}`);
-          } else if (context.includes("specific")) {
-            const company = info.experience.companies[0];
-            responses.push(`At ${company.name}, as ${company.role}, key achievements include: ${company.achievements.join(", ")}`);
-          } else {
-            responses.push(info.experience.summary);
-          }
-          break;
-
-        case "interests":
-          if (lowerMessage.includes("tech")) {
-            const techInterests = info.interests.filter((interest: string) => 
-              interest.toLowerCase().includes("development") || 
-              interest.toLowerCase().includes("tech") ||
-              interest.toLowerCase().includes("ai")
-            );
-            responses.push(`In the tech world, Furkan is particularly interested in ${techInterests.join(", ")}.`);
-          } else {
-            responses.push(`Furkan is passionate about ${info.interests.join(", ")}.`);
-          }
-          break;
-      }
-    });
-
-    // Enhanced fallback response
-    if (responses.length === 0) {
-      const generalInfo = [
-        `Furkan is a ${info.personal.role} with ${info.experience.years}+ years of experience.`,
-        `He specializes in ${info.skills.frontend.slice(0, 3).join(", ")} for frontend development.`,
-        `You can ask about his skills, projects, experience, or interests.`
-      ];
-      responses.push(generalInfo.join(" "));
-    }
-
-    return responses.join(" ");
-  } catch (error) {
-    console.error('Error in generateContextAwareResponse:', error);
-    throw new Error('Failed to generate response');
+    
+    await kv.set(key, current + 1, { ex: RATE_LIMIT_WINDOW / 1000 });
+    return true;
+  } catch {
+    return true; // KV hatası durumunda rate limit'i devre dışı bırak
   }
+}
+
+// Cache kontrolü
+async function getCachedResponse(message: string): Promise<string | null> {
+  if (!isKvEnabled) return null;
+  
+  try {
+    const key = `chat_cache:${message}`;
+    return await kv.get<string>(key);
+  } catch {
+    return null;
+  }
+}
+
+// Cache'e kaydet
+async function cacheResponse(message: string, response: string): Promise<void> {
+  if (!isKvEnabled) return;
+  
+  try {
+    const key = `chat_cache:${message}`;
+    await kv.set(key, response, { ex: CACHE_TTL });
+  } catch {
+    // Cache hatası durumunda sessizce devam et
+  }
+}
+
+// Fallback yanıt oluştur
+function generateFallbackResponse(message: string): string {
+  const lowerMessage = message.toLowerCase();
+  
+  if (lowerMessage.includes('skill') || lowerMessage.includes('tech')) {
+    return FALLBACK_RESPONSES.skills;
+  }
+  if (lowerMessage.includes('project') || lowerMessage.includes('work')) {
+    return FALLBACK_RESPONSES.projects;
+  }
+  if (lowerMessage.includes('experience') || lowerMessage.includes('job')) {
+    return FALLBACK_RESPONSES.experience;
+  }
+  
+  return FALLBACK_RESPONSES.default;
 }
 
 export async function POST(req: Request) {
@@ -253,38 +181,50 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if the question is about Furkan
-    const lowerMessage = message.toLowerCase();
-    const isAboutFurkan = Object.values(KEYWORDS).some(category =>
-      category.some(keyword => lowerMessage.includes(keyword))
-    );
-
-    let response: string;
+    // Rate limit kontrolü
+    const ip = req.headers.get('x-forwarded-for') || 'unknown';
+    const isAllowed = await checkRateLimit(ip);
     
-    if (!isAboutFurkan) {
-      response = "I can only answer questions about Furkan. Please ask me something about his skills, projects, experience, or background. For example, you can ask about his technical skills, recent projects, or work experience.";
-    } else {
-      try {
-        response = generateContextAwareResponse(message, FURKAN_INFO);
-      } catch (error) {
-        console.error('Error generating response:', error);
-        return NextResponse.json(
-          { error: 'Failed to generate response' },
-          { status: 500 }
-        );
-      }
-    }
-
-    if (!response) {
+    if (!isAllowed) {
       return NextResponse.json(
-        { error: 'No response generated' },
-        { status: 500 }
+        { error: 'Rate limit exceeded. Please try again later.' },
+        { status: 429 }
       );
     }
 
-    return NextResponse.json({ response });
+    // Cache kontrolü
+    const cachedResponse = await getCachedResponse(message);
+    if (cachedResponse) {
+      return NextResponse.json({ response: cachedResponse });
+    }
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      });
+
+      const response = completion.choices[0].message.content;
+
+      if (!response) {
+        throw new Error('No response generated');
+      }
+
+      // Yanıtı cache'e kaydet
+      await cacheResponse(message, response);
+
+      return NextResponse.json({ response });
+    } catch (error: any) {
+      // OpenAI hatası durumunda fallback yanıt kullan
+      const fallbackResponse = generateFallbackResponse(message);
+      return NextResponse.json({ response: fallbackResponse });
+    }
   } catch (error) {
-    console.error('Error in POST handler:', error);
     return NextResponse.json(
       { error: 'An error occurred while processing your request' },
       { status: 500 }
