@@ -35,41 +35,47 @@ class FileService {
   static async ensureDataDir() {
     try {
       await mkdir(DATA_DIR, { recursive: true });
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error creating data directory:', error);
+      throw new Error('Failed to create data directory');
     }
   }
 
   static async readJsonFile<T>(filePath: string): Promise<T> {
     try {
-      const content = await readFile(filePath, 'utf-8');
-      return JSON.parse(content);
-    } catch (error: unknown) {
+      const data = await readFile(filePath, 'utf-8');
+      return JSON.parse(data) as T;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        // File doesn't exist, return empty data
+        return [] as T;
+      }
       console.error(`Error reading file ${filePath}:`, error);
-      return [] as T;
+      throw new Error(`Failed to read file: ${filePath}`);
     }
   }
 
   static async writeJsonFile<T>(filePath: string, data: T): Promise<void> {
     try {
-      await writeFile(filePath, JSON.stringify(data, null, 2));
-    } catch (error: unknown) {
+      const jsonData = JSON.stringify(data, null, 2);
+      await writeFile(filePath, jsonData, 'utf-8');
+    } catch (error) {
       console.error(`Error writing file ${filePath}:`, error);
-      throw error;
+      throw new Error(`Failed to write file: ${filePath}`);
     }
   }
 }
 
 class SessionService {
   private static sessions: Map<string, SessionData> = new Map();
-  private static readonly SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+  private static readonly SESSION_TIMEOUT = 5 * 60 * 1000; // 5 dakika
 
   static async loadSessions(): Promise<void> {
     try {
-      const sessions: SessionData[] = await FileService.readJsonFile(SESSIONS_FILE);
+      const sessions = await FileService.readJsonFile<SessionData[]>(SESSIONS_FILE);
       this.sessions = new Map(sessions.map(session => [session.id, session]));
       this.cleanupOldSessions();
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error loading sessions:', error);
       this.sessions = new Map();
     }
@@ -77,10 +83,9 @@ class SessionService {
 
   static async saveSessions(): Promise<void> {
     try {
-      this.cleanupOldSessions();
-      const sessions: SessionData[] = Array.from(this.sessions.values());
+      const sessions = Array.from(this.sessions.values());
       await FileService.writeJsonFile(SESSIONS_FILE, sessions);
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error saving sessions:', error);
       throw error;
     }
@@ -226,10 +231,11 @@ export async function GET() {
     
     const stats = await VisitorService.getVisitorStats();
     const visitorId = generateVisitorId();
+    const activeVisitors = SessionService.getActiveSessions();
 
     console.log('Visitor stats:', {
       currentCount: stats.currentCount,
-      activeVisitors: stats.activeVisitors,
+      activeVisitors,
       visitorId,
       sessions: Array.from(SessionService['sessions'].values())
     });
@@ -237,10 +243,10 @@ export async function GET() {
     return NextResponse.json({
       currentCount: stats.currentCount,
       history: stats.history,
-      activeVisitors: stats.activeVisitors,
+      activeVisitors,
       visitorId
     });
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Error in GET /api/visitors:', error);
     return NextResponse.json(
       { 
@@ -262,7 +268,6 @@ export async function POST(request: Request) {
     await FileService.ensureDataDir();
     await SessionService.loadSessions();
     
-    // Check if visitor already exists in the last 24 hours
     const visitorData = await VisitorService.loadVisitorData();
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentVisitors = visitorData.filter(item => 
@@ -271,7 +276,6 @@ export async function POST(request: Request) {
       item.userAgent === userAgent
     );
 
-    // Only add new visitor if not already counted in last 24 hours
     if (recentVisitors.length === 0) {
       await VisitorService.addVisitor(ip, userAgent);
       console.log('New visitor added:', { ip, userAgent });
@@ -281,30 +285,35 @@ export async function POST(request: Request) {
 
     const visitorId = generateVisitorId();
     
-    // Only update session if it's a new session
     if (!SessionService.isExistingSession(ip, userAgent)) {
       SessionService.updateSession(visitorId, ip, userAgent);
       await SessionService.saveSessions();
     }
 
     const stats = await VisitorService.getVisitorStats();
+    const activeVisitors = SessionService.getActiveSessions();
+
     console.log('Updated visitor stats:', {
       currentCount: stats.currentCount,
-      activeVisitors: stats.activeVisitors,
+      activeVisitors,
       sessions: Array.from(SessionService['sessions'].values())
     });
 
     return NextResponse.json({ 
       success: true,
       message: 'Visitor data updated successfully',
-      stats
+      stats: {
+        ...stats,
+        activeVisitors
+      }
     });
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Error in POST /api/visitors:', error);
     return NextResponse.json(
       { 
         error: 'Failed to update visitor data',
-        success: false
+        success: false,
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
