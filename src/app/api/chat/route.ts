@@ -5,6 +5,10 @@ import { kv } from '@vercel/kv';
 // KV bağlantı kontrolü
 const isKvEnabled = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
 
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error('OPENAI_API_KEY is not set in environment variables');
+}
+
 // OpenAI istemcisi
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -163,26 +167,20 @@ function generateFallbackResponse(message: string): string {
   return FALLBACK_RESPONSES.default;
 }
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    if (!req.body) {
-      return NextResponse.json(
-        { error: 'Request body is missing' },
-        { status: 400 }
-      );
-    }
+    const body = await request.json();
+    const { message } = body;
 
-    const { message } = await req.json();
-
-    if (!message || typeof message !== 'string') {
+    if (!message) {
       return NextResponse.json(
-        { error: 'Message is required and must be a string' },
+        { error: 'Message is required' },
         { status: 400 }
       );
     }
 
     // Rate limit kontrolü
-    const ip = req.headers.get('x-forwarded-for') || 'unknown';
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
     const isAllowed = await checkRateLimit(ip);
     
     if (!isAllowed) {
@@ -219,14 +217,15 @@ export async function POST(req: Request) {
       await cacheResponse(message, response);
 
       return NextResponse.json({ response });
-    } catch (error: any) {
+    } catch {
       // OpenAI hatası durumunda fallback yanıt kullan
       const fallbackResponse = generateFallbackResponse(message);
       return NextResponse.json({ response: fallbackResponse });
     }
-  } catch (error) {
+  } catch (err: unknown) {
+    console.error('Error processing chat message:', err);
     return NextResponse.json(
-      { error: 'An error occurred while processing your request' },
+      { error: 'Failed to process chat message' },
       { status: 500 }
     );
   }
