@@ -13,7 +13,6 @@ const DownloadCV = () => {
   const [showQR, setShowQR] = useState<boolean>(false);
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [zoomLevel, setZoomLevel] = useState<number>(100);
-  const [qrLoading, setQrLoading] = useState<boolean>(false);
 
   const handleDownload = async () => {
     setIsLoading(true);
@@ -86,44 +85,6 @@ const DownloadCV = () => {
       const newZoom = direction === 'in' ? prev + 25 : prev - 25;
       return Math.min(Math.max(newZoom, 50), 200);
     });
-  };
-
-  const handleQRDownload = () => {
-    setQrLoading(true);
-    try {
-      // QR kodunu PNG olarak indir
-      const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement;
-      if (canvas) {
-        const pngUrl = canvas.toDataURL('image/png');
-        const downloadLink = document.createElement('a');
-        downloadLink.href = pngUrl;
-        downloadLink.download = 'furkan_akar_cv_qr.png';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        
-        toast.success('QR Code downloaded successfully!', {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      }
-    } catch (error) {
-      console.error('Error downloading QR code:', error);
-      toast.error('Failed to download QR code. Please try again.', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-    } finally {
-      setQrLoading(false);
-    }
   };
 
   return (
@@ -289,46 +250,22 @@ const DownloadCV = () => {
               >
                 <h2 className="text-xl font-semibold mb-4">Scan to Download CV</h2>
                 
-                <div className="relative">
-                  {qrLoading ? (
-                    <div className="w-48 h-48 flex items-center justify-center">
-                      <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    </div>
-                  ) : (
-                    <QRCodeSVG
-                      id="qr-canvas"
-                      value={`${window.location.origin}/cv.pdf`}
-                      size={192}
-                      level="H"
-                      includeMargin={true}
-                      imageSettings={{
-                        src: '/favicon.ico',
-                        height: 40,
-                        width: 40,
-                        excavate: true,
-                      }}
-                    />
-                  )}
-                </div>
+                <QRCodeSVG
+                  value={`${window.location.origin}/cv.pdf`}
+                  size={192}
+                  level="H"
+                  includeMargin={true}
+                  imageSettings={{
+                    src: '/favicon.ico',
+                    height: 40,
+                    width: 40,
+                    excavate: true,
+                  }}
+                />
 
                 <p className="mt-4 text-gray-600 text-center max-w-xs">
                   Scan this QR code with your phone to download my CV
                 </p>
-
-                <div className="mt-4 flex space-x-2">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleQRDownload}
-                    disabled={qrLoading}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors disabled:opacity-50"
-                  >
-                    Download QR Code
-                  </motion.button>
-                </div>
               </motion.div>
             </motion.div>
           )}
