@@ -1,5 +1,7 @@
 'use client';
 
+import DownloadCV from './DownloadCV';
+
 const Hero = () => {
   return (
     <section className="min-h-screen flex items-center justify-center px-4">
@@ -12,6 +14,7 @@ const Hero = () => {
         specializing in cloud and AI integrations, creating innovative solutions. 
         </p>
         <div className="flex justify-center space-x-4">
+          <DownloadCV />
         </div>
       </div>
     </section>
