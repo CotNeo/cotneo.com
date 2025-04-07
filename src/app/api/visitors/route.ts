@@ -35,33 +35,39 @@ class FileService {
   static async ensureDataDir() {
     try {
       await mkdir(DATA_DIR, { recursive: true });
+      console.log('Data directory ensured:', DATA_DIR);
     } catch (error) {
       console.error('Error creating data directory:', error);
-      throw new Error('Failed to create data directory');
+      throw new Error(`Failed to create data directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   static async readJsonFile<T>(filePath: string): Promise<T> {
     try {
+      console.log('Reading file:', filePath);
       const data = await readFile(filePath, 'utf-8');
-      return JSON.parse(data) as T;
+      const parsedData = JSON.parse(data) as T;
+      console.log('Successfully read file:', filePath);
+      return parsedData;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-        // File doesn't exist, return empty data
+        console.log('File does not exist, returning empty data:', filePath);
         return [] as T;
       }
       console.error(`Error reading file ${filePath}:`, error);
-      throw new Error(`Failed to read file: ${filePath}`);
+      throw new Error(`Failed to read file ${filePath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   static async writeJsonFile<T>(filePath: string, data: T): Promise<void> {
     try {
+      console.log('Writing to file:', filePath);
       const jsonData = JSON.stringify(data, null, 2);
       await writeFile(filePath, jsonData, 'utf-8');
+      console.log('Successfully wrote to file:', filePath);
     } catch (error) {
       console.error(`Error writing file ${filePath}:`, error);
-      throw new Error(`Failed to write file: ${filePath}`);
+      throw new Error(`Failed to write file ${filePath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }
@@ -264,11 +270,46 @@ export async function POST(request: Request) {
   try {
     console.log('POST /api/visitors called');
     const { ip, userAgent } = getClientInfo(request);
+    console.log('Client info:', { ip, userAgent });
     
-    await FileService.ensureDataDir();
-    await SessionService.loadSessions();
+    // Ensure data directory exists
+    try {
+      await FileService.ensureDataDir();
+    } catch (error) {
+      console.error('Error ensuring data directory:', error);
+      return NextResponse.json(
+        { error: 'Failed to create data directory', details: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
+
+    // Load sessions
+    let sessions: SessionData[] = [];
+    try {
+      await SessionService.loadSessions();
+      sessions = Array.from(SessionService['sessions'].values());
+      console.log('Loaded sessions:', sessions);
+    } catch (error) {
+      console.error('Error loading sessions:', error);
+      return NextResponse.json(
+        { error: 'Failed to load sessions', details: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
     
-    const visitorData = await VisitorService.loadVisitorData();
+    // Check if visitor already exists in the last 24 hours
+    let visitorData: VisitorData[] = [];
+    try {
+      visitorData = await VisitorService.loadVisitorData();
+      console.log('Loaded visitor data:', visitorData);
+    } catch (error) {
+      console.error('Error loading visitor data:', error);
+      return NextResponse.json(
+        { error: 'Failed to load visitor data', details: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
+
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentVisitors = visitorData.filter(item => 
       new Date(item.timestamp) >= oneDayAgo && 
@@ -276,18 +317,40 @@ export async function POST(request: Request) {
       item.userAgent === userAgent
     );
 
+    console.log('Recent visitors:', recentVisitors);
+
+    // Only add new visitor if not already counted in last 24 hours
     if (recentVisitors.length === 0) {
-      await VisitorService.addVisitor(ip, userAgent);
-      console.log('New visitor added:', { ip, userAgent });
+      try {
+        await VisitorService.addVisitor(ip, userAgent);
+        console.log('New visitor added:', { ip, userAgent });
+      } catch (error) {
+        console.error('Error adding visitor:', error);
+        return NextResponse.json(
+          { error: 'Failed to add visitor', details: error instanceof Error ? error.message : 'Unknown error' },
+          { status: 500 }
+        );
+      }
     } else {
       console.log('Visitor already counted in last 24 hours:', { ip, userAgent });
     }
 
     const visitorId = generateVisitorId();
+    console.log('Generated visitor ID:', visitorId);
     
+    // Only update session if it's a new session
     if (!SessionService.isExistingSession(ip, userAgent)) {
-      SessionService.updateSession(visitorId, ip, userAgent);
-      await SessionService.saveSessions();
+      try {
+        SessionService.updateSession(visitorId, ip, userAgent);
+        await SessionService.saveSessions();
+        console.log('Session updated:', { visitorId, ip, userAgent });
+      } catch (error) {
+        console.error('Error updating session:', error);
+        return NextResponse.json(
+          { error: 'Failed to update session', details: error instanceof Error ? error.message : 'Unknown error' },
+          { status: 500 }
+        );
+      }
     }
 
     const stats = await VisitorService.getVisitorStats();
