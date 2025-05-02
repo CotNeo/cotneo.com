@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import DownloadCV from './DownloadCV';
-import ChatBot from './ChatBot';
 
 const Hero = () => {
   return (
@@ -42,7 +41,6 @@ const Hero = () => {
           className="flex flex-col md:flex-row justify-center items-center gap-6"
         >
           <DownloadCV />
-          <ChatBot />
         </motion.div>
       </div>
     </section>

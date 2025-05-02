@@ -71,7 +71,6 @@ const ChatBot = () => {
   };
 
   const handleSuggestionClick = (question: string) => {
-    if (getUserMessageCount() >= 3) return;
     setInput(question);
     handleSubmit(null, question);
   };
