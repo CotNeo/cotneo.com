@@ -65,7 +65,7 @@ const Hero = () => {
           <div className="flex justify-center items-center gap-6">
             {/* Freelancer Profile */}
             <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
+              whileHover={{ scale: 1.20, y: -5 }}
               whileTap={{ scale: 0.95 }}
               className="group relative"
             >
@@ -90,7 +90,33 @@ const Hero = () => {
                 <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.a>
             </motion.div>
+            {/* CODERSPACE */}
+            <motion.div
+              whileHover={{ scale: 1.20, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://coderspace.io/portfolyo/furkan798/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-4 bg-gradient-to-br from-[#29B2FE] via-[#1E90FF] to-[#0066CC] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#29B2FE]/20 to-[#0066CC]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-2">
+                  <div className="p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaGlobe className="w-6 h-6" />
+                  </div>
+                  <span className="text-sm font-semibold tracking-wide">CODERSPASE</span>
+                </div>
 
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
             {/* Bionluk Profile */}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
