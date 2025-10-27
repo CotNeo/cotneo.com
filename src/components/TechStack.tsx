@@ -10,6 +10,7 @@ interface Technology {
 
 interface TechnologiesType {
   Frontend: Technology[];
+  'Mobile Frontend': Technology[];
   Backend: Technology[];
   'Development & Testing': Technology[];
   'Cloud & DevOps': Technology[];
@@ -35,6 +36,14 @@ const technologies: TechnologiesType = {
     { name: 'React Bootstrap', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/reactbootstrap/reactbootstrap-original.svg' },
     { name: 'React Router', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/reactrouter/reactrouter-original.svg' },
     { name: 'Axios', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/axios/axios-plain-wordmark.svg' },
+  ],
+  'Mobile Frontend': [
+    { name: 'React Native', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg' },
+    { name: 'Expo', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/expo/expo-original-wordmark.svg' },
+    { name: 'TypeScript', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg' },
+    { name: 'NativeWind', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg' },
+    { name: 'React Navigation', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg' },
+    { name: 'React Native Paper', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/materialui/materialui-original.svg' },
   ],
   Backend: [
     { name: 'Node.js', icon: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg' },
@@ -70,6 +79,11 @@ const categories: Category[] = [
     name: 'Frontend', 
     color: 'from-blue-400 to-blue-600',
     gradientBg: 'from-blue-500/10 to-blue-600/10'
+  },
+  { 
+    name: 'Mobile Frontend', 
+    color: 'from-pink-400 to-pink-600',
+    gradientBg: 'from-pink-500/10 to-pink-600/10'
   },
   { 
     name: 'Backend', 
@@ -112,21 +126,23 @@ const TechStack = () => {
   }, []);
 
   return (
-    <section id="tech-stack" className="relative py-20">
+    <section id="tech-stack" className="relative py-12 sm:py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`text-center mb-16 transition-all duration-1000 transform ${
+        {/* Header Section */}
+        <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 transform ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
         }`}>
-          <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 hover:scale-105 transition-transform duration-300">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 hover:scale-105 transition-transform duration-300">
             Tech Stack
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-blue-400 to-purple-600 mx-auto rounded-full transition-all duration-500 hover:w-32"></div>
-          <p className="mt-4 text-xl text-gray-300/90">
+          <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-blue-400 to-purple-600 mx-auto rounded-full transition-all duration-500 hover:w-24 sm:hover:w-32"></div>
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl text-gray-300/90">
             Technologies I work with
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Categories Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {categories.map((category, categoryIndex) => (
             <div
               key={category.name}
@@ -136,40 +152,45 @@ const TechStack = () => {
                   : 'opacity-0 translate-y-20'
               }`}
               style={{
-                transitionDelay: `${categoryIndex * 200}ms`
+                transitionDelay: `${categoryIndex * 150}ms`
               }}
             >
-              <div className="relative group">
+              <div className="relative group h-full">
                 {/* Glow effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                <div className="absolute -inset-0.5 sm:-inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl sm:rounded-2xl blur-lg group-hover:blur-xl sm:group-hover:blur-2xl transition-all duration-500"></div>
                 
                 {/* Card content */}
-                <div className={`relative bg-gradient-to-r ${category.gradientBg} border border-gray-700/50 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500`}>
-                  <div className={`p-4 bg-gradient-to-r ${category.color} bg-opacity-10`}>
-                    <h3 className="text-xl font-semibold text-white">
+                <div className={`relative bg-gradient-to-r ${category.gradientBg} border border-gray-700/50 backdrop-blur-sm rounded-xl sm:rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 h-full flex flex-col`}>
+                  {/* Category Header */}
+                  <div className={`p-3 sm:p-4 bg-gradient-to-r ${category.color} bg-opacity-10 border-b border-gray-700/30`}>
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white truncate">
                       {category.name}
                     </h3>
                   </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-3 sm:grid-cols-3 gap-6">
+                  
+                  {/* Technologies Grid */}
+                  <div className="p-4 sm:p-5 md:p-6 flex-1">
+                    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                       {technologies[category.name as keyof TechnologiesType].map((tech, techIndex) => (
                         <div
                           key={tech.name}
-                          className="flex flex-col items-center space-y-2 group/tech"
+                          className="flex flex-col items-center space-y-1.5 sm:space-y-2 group/tech"
                           style={{
-                            animation: isVisible ? `fadeIn 0.5s ease-out forwards ${categoryIndex * 200 + techIndex * 100}ms` : 'none'
+                            animation: isVisible ? `fadeIn 0.5s ease-out forwards ${categoryIndex * 150 + techIndex * 80}ms` : 'none'
                           }}
                         >
-                          <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-800/50 group-hover/tech:bg-gray-700/50 transform group-hover/tech:scale-110 transition-all duration-300">
+                          {/* Icon Container */}
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-lg bg-gray-800/50 group-hover/tech:bg-gray-700/50 transform group-hover/tech:scale-110 transition-all duration-300 shadow-md">
                             <Image
                               src={tech.icon}
                               alt={tech.name}
-                              width={40}
-                              height={40}
-                              className="w-10 h-10 transition-all duration-300 group-hover:scale-110"
+                              width={48}
+                              height={48}
+                              className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain transition-all duration-300 group-hover:scale-110 filter brightness-110"
                             />
                           </div>
-                          <span className="text-sm text-gray-300/90 group-hover/tech:text-white transition-colors duration-300">
+                          {/* Technology Name */}
+                          <span className="text-xs sm:text-sm text-gray-300/90 group-hover/tech:text-white transition-colors duration-300 text-center leading-tight px-1">
                             {tech.name}
                           </span>
                         </div>
@@ -183,6 +204,7 @@ const TechStack = () => {
         </div>
       </div>
 
+      {/* Global Animation Styles */}
       <style jsx global>{`
         @keyframes fadeIn {
           from {
