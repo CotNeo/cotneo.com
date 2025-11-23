@@ -26,7 +26,7 @@ const Certificates = () => {
   }, []);
 
   return (
-    <section id="certificates" className="relative py-20">
+    <section id="certificates" className="relative py-20 scroll-mt-24 md:scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`text-center mb-16 transition-all duration-1000 transform ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'

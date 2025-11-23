@@ -18,7 +18,12 @@ This is my personal portfolio website built with modern web technologies. The pr
 - 🌟 Interactive 3D background
 - 💼 Project showcase
 - 🛠️ Tech stack display
-- 💬 AI-powered chatbot with natural conversation
+- 💬 AI-powered chatbot with natural conversation (ChatGPT-like experience)
+  - 🌍 Multi-language support (Turkish/English auto-detection)
+  - 🧠 Context-aware conversations
+  - 📝 Fallback responses for offline/error scenarios
+  - 🎯 Topic filtering (only answers about Furkan's professional background)
+  - 💡 Smart suggestions and helpful responses
 - 📱 Fully responsive layout
 - 📊 Real-time visitor analytics
 - 🔒 Cookie consent management
@@ -85,12 +90,16 @@ cotneo/
 ### Chat API
 - **Endpoint**: `/api/chat`
 - **Method**: POST
-- **Body**: `{ message: string }`
+- **Body**: `{ message: string, conversationId?: string, previousMessages?: Array }`
 - **Features**: 
-  - Rate limiting (100 requests/hour)
-  - Response caching
-  - Fallback responses
-  - Natural conversation flow
+  - Rate limiting (100 requests/hour per IP)
+  - Response caching with Vercel KV
+  - Context-aware conversations (maintains conversation history)
+  - Automatic language detection (Turkish/English)
+  - Fallback responses for offline/error scenarios
+  - Natural conversation flow (ChatGPT-like experience)
+  - Topic filtering (only answers about professional background)
+  - Smart keyword matching for common questions
 
 ### Visitor API
 - **Endpoint**: `/api/visitors`
@@ -105,9 +114,18 @@ cotneo/
 The site is deployed on Vercel. Every push to the main branch triggers an automatic deployment.
 
 ### Environment Setup
-1. Add required environment variables in Vercel dashboard
-2. Configure KV database
-3. Set up OpenAI API key
+1. Add required environment variables in Vercel dashboard:
+   - `OPENAI_API_KEY`: Your OpenAI API key for chatbot functionality
+   - `KV_REST_API_URL`: Vercel KV database URL
+   - `KV_REST_API_TOKEN`: Vercel KV API token
+   - `KV_REST_API_READ_ONLY_TOKEN`: Vercel KV read-only token (optional)
+2. Configure KV database in Vercel dashboard
+3. Set up OpenAI API key (required for AI chatbot)
+
+### Note
+- The chatbot works with fallback responses even if OpenAI API key is not set
+- Rate limiting and caching are handled automatically
+- All features work seamlessly in production
 
 ## Performance Optimization
 
@@ -117,10 +135,21 @@ The site is deployed on Vercel. Every push to the main branch triggers an automa
 - Caching strategies
 - Rate limiting implementation
 
+## Recent Updates
+
+- ✅ Enhanced AI chatbot with multi-language support (Turkish/English)
+- ✅ Improved language detection and natural conversation flow
+- ✅ Added contact information responses
+- ✅ Better fallback responses for common questions
+- ✅ ChatGPT-like conversational experience
+- ✅ Fixed mobile menu overlap issues
+- ✅ Improved responsive design
+
 ## Contact
 
 - Website: [cotneo.com](https://cotneo.com)
-- GitHub: [@cotneo](https://github.com/cotneo)
+- GitHub: [@CotNeo](https://github.com/CotNeo)
+- LinkedIn: [furkanaliakar](https://linkedin.com/in/furkanaliakar)
 
 ## License
 

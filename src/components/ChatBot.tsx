@@ -2,18 +2,34 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaRobot, FaTimes, FaRedo, FaPaperPlane } from 'react-icons/fa';
+import { FaRobot, FaTimes, FaRedo, FaPaperPlane, FaCopy, FaCheck } from 'react-icons/fa';
 
 interface Message {
+  id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp?: string;
 }
 
 const INITIAL_MESSAGE: Message = {
+  id: 'initial-' + Date.now(),
   role: 'assistant',
   content: "Hi! 👋 I'm Furkan's AI assistant. I can tell you all about his skills, projects, experience, and more. What would you like to know?",
   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+};
+
+/**
+ * Generates a unique ID for messages
+ */
+const generateMessageId = (): string => {
+  return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+};
+
+/**
+ * Formats timestamp for display
+ */
+const formatTimestamp = (): string => {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 const SUGGESTION_QUESTIONS = [
@@ -32,28 +48,74 @@ const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>(SUGGESTION_QUESTIONS);
+  const [suggestions, setSuggestions] = useState<string[]>(() => 
+    [...SUGGESTION_QUESTIONS].sort(() => Math.random() - 0.5).slice(0, 3)
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const messagesRef = useRef<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [typingIndicator, setTypingIndicator] = useState('');
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string>(() => 
     Math.random().toString(36).substring(2, 15)
   );
 
-  // Otomatik scroll
+  // Keep messagesRef in sync with messages state
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  /**
+   * Scrolls to bottom of messages container
+   */
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   }, []);
 
+  /**
+   * Handles opening/closing chat and focus management
+   */
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
-      inputRef.current?.focus();
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 200);
     }
-  }, [isOpen, messages, scrollToBottom]);
+  }, [isOpen, scrollToBottom]);
 
-  // Typing indicator effect
+  /**
+   * Auto-scroll when new messages arrive
+   */
+  useEffect(() => {
+    if (messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages.length, scrollToBottom]);
+
+  /**
+   * Keyboard shortcuts (ESC to close)
+   */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isOpen]);
+
+  /**
+   * Typing indicator animation
+   */
   useEffect(() => {
     if (isTyping) {
       const interval = setInterval(() => {
@@ -63,34 +125,65 @@ const ChatBot = () => {
         });
       }, 500);
       return () => clearInterval(interval);
+    } else {
+      setTypingIndicator('');
     }
   }, [isTyping]);
 
-  const getUserMessageCount = () => {
+  /**
+   * Gets count of user messages
+   */
+  const getUserMessageCount = useCallback(() => {
     return messages.filter(msg => msg.role === 'user').length;
+  }, [messages]);
+
+  /**
+   * Copies message content to clipboard
+   */
+  const handleCopyMessage = async (content: string, messageId: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (error) {
+      console.error('[ChatBot] Failed to copy message:', error);
+    }
   };
 
-  const handleSuggestionClick = (question: string) => {
-    setInput(question);
-    handleSubmit(null, question);
-  };
-
-  const handleSubmit = async (e: React.FormEvent | null, suggestedQuestion?: string) => {
+  /**
+   * Handles form submission and API call
+   */
+  const handleSubmit = useCallback(async (e: React.FormEvent | null, suggestedQuestion?: string) => {
     if (e) e.preventDefault();
     const messageToSend = suggestedQuestion || input;
     if ((!messageToSend.trim() && !suggestedQuestion) || isLoading) return;
 
     const userMessage: Message = { 
+      id: generateMessageId(),
       role: 'user', 
-      content: messageToSend,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      content: messageToSend.trim(),
+      timestamp: formatTimestamp()
     };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    
+    // Update messages state and ref
+    setMessages(prev => {
+      const updated = [...prev, userMessage];
+      messagesRef.current = updated;
+      return updated;
+    });
+    
+    // Clear input if not a suggestion
+    if (!suggestedQuestion) {
+      setInput('');
+    }
+    
     setIsLoading(true);
     setIsTyping(true);
 
     try {
+      // Use ref to get current messages for API call
+      const currentMessages = messagesRef.current;
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 
@@ -98,9 +191,9 @@ const ChatBot = () => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({ 
-          message: messageToSend,
+          message: messageToSend.trim(),
           conversationId,
-          previousMessages: messages.slice(-4).map(msg => ({
+          previousMessages: currentMessages.slice(-4).map(msg => ({
             role: msg.role,
             content: msg.content
           }))
@@ -110,14 +203,20 @@ const ChatBot = () => {
       let data;
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
+        try {
+          data = await response.json();
+        } catch (parseError) {
+          console.error('[ChatBot] JSON parse error:', parseError);
+          throw new Error('Failed to parse server response');
+        }
       } else {
-        const text = await response.text();
-        throw new Error(`Invalid response format: ${text.substring(0, 100)}...`);
+        // HTML veya başka bir format geldiğinde fallback kullan
+        console.error('[ChatBot] Invalid content type:', contentType);
+        throw new Error('Server returned an invalid response format');
       }
 
       if (!response.ok) {
-        throw new Error(data.error || 'An error occurred while processing your request');
+        throw new Error(data.error || `Server error: ${response.status} ${response.statusText}`);
       }
 
       if (!data.response) {
@@ -125,53 +224,95 @@ const ChatBot = () => {
       }
 
       const assistantMessage: Message = { 
+        id: generateMessageId(),
         role: 'assistant', 
         content: data.response,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: formatTimestamp()
       };
-      setMessages(prev => [...prev, assistantMessage]);
+      
+      setMessages(prev => {
+        const updated = [...prev, assistantMessage];
+        messagesRef.current = updated;
+        return updated;
+      });
 
       // Update suggestions based on context
-      if (suggestedQuestion) {
+      setSuggestions(prev => {
         const remainingSuggestions = SUGGESTION_QUESTIONS.filter(q => 
           q !== suggestedQuestion && 
-          !messages.some(m => m.role === 'user' && m.content === q)
+          !currentMessages.some(m => m.role === 'user' && m.content === q)
         );
         const shuffled = [...remainingSuggestions].sort(() => Math.random() - 0.5);
-        setSuggestions(shuffled.slice(0, 3));
-      }
+        return shuffled.slice(0, 3);
+      });
     } catch (error) {
-      console.error('Error in handleSubmit:', error);
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'An error occurred while processing your request. Please try again.';
+      console.error('[ChatBot] Error in handleSubmit:', error);
       
-      setMessages(prev => [...prev, {
+      // Kullanıcı dostu hata mesajı
+      let errorMessage = 'I apologize, but I encountered an error processing your request. ';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+          errorMessage += 'It seems there\'s a network issue. Please check your connection and try again.';
+        } else if (error.message.includes('Invalid response format') || error.message.includes('parse')) {
+          errorMessage += 'The server returned an unexpected response. Please try again in a moment.';
+        } else if (error.message.includes('Server error')) {
+          errorMessage += 'The server is experiencing issues. Please try again later.';
+        } else {
+          errorMessage += 'Please try again or rephrase your question.';
+        }
+      } else {
+        errorMessage += 'Please try again or rephrase your question.';
+      }
+      
+      const errorResponse: Message = {
+        id: generateMessageId(),
         role: 'assistant',
-        content: `I apologize, but I encountered an error: ${errorMessage}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+        content: errorMessage,
+        timestamp: formatTimestamp()
+      };
+      setMessages(prev => {
+        const updated = [...prev, errorResponse];
+        messagesRef.current = updated;
+        return updated;
+      });
     } finally {
       setIsLoading(false);
       setIsTyping(false);
     }
-  };
+  }, [input, isLoading, conversationId]);
 
+  /**
+   * Handles suggestion click
+   */
+  const handleSuggestionClick = useCallback((question: string) => {
+    handleSubmit(null, question);
+  }, [handleSubmit]);
+
+  /**
+   * Resets the conversation
+   */
   const handleReset = () => {
-    setMessages([INITIAL_MESSAGE]);
-    setSuggestions(SUGGESTION_QUESTIONS.sort(() => Math.random() - 0.5).slice(0, 3));
+    const resetMessages = [INITIAL_MESSAGE];
+    setMessages(resetMessages);
+    messagesRef.current = resetMessages;
+    setSuggestions([...SUGGESTION_QUESTIONS].sort(() => Math.random() - 0.5).slice(0, 3));
     setInput('');
     setConversationId(Math.random().toString(36).substring(2, 15));
+    setIsTyping(false);
+    setTypingIndicator('');
+    setIsLoading(false);
   };
 
+  /**
+   * Handles keyboard input
+   */
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
   };
-
-  const remainingQuestions = 3 - getUserMessageCount();
 
   return (
     <div className="relative">
@@ -180,7 +321,7 @@ const ChatBot = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold 
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold 
                  shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 overflow-hidden group
                  backdrop-blur-sm bg-opacity-90 border border-white/10 z-50"
         aria-label={isOpen ? "Close chat" : "Open chat"}
@@ -191,8 +332,8 @@ const ChatBot = () => {
         
         {/* Button content */}
         <div className="relative z-10 flex items-center space-x-2">
-          <FaRobot className="w-5 h-5" />
-          <span>Chat with AI</span>
+          <FaRobot className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base">Chat with AI</span>
         </div>
       </motion.button>
 
@@ -200,10 +341,13 @@ const ChatBot = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 right-6 w-96 bg-gray-900/90 backdrop-blur-sm rounded-lg shadow-2xl border border-white/10 flex flex-col overflow-hidden z-50"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-20 right-4 left-4 sm:left-auto sm:right-6 sm:w-96 
+                     bg-gray-900/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/10 
+                     flex flex-col overflow-hidden z-50 max-h-[calc(100vh-6rem)]"
           >
             {/* Header */}
             <div className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 flex justify-between items-center">
@@ -237,25 +381,42 @@ const ChatBot = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[60vh]">
-              {messages.map((message, index) => (
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+              {messages.map((message) => (
                 <motion.div
-                  key={index}
+                  key={message.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] p-3 rounded-lg ${
+                    className={`max-w-[85%] sm:max-w-[80%] p-3 rounded-lg ${
                       message.role === 'user'
                         ? 'bg-blue-500/90 text-white'
                         : 'bg-gray-800/90 text-gray-200'
-                    } shadow-md relative group backdrop-blur-sm`}
+                    } shadow-md relative group backdrop-blur-sm break-words`}
                   >
-                    {message.content}
-                    <span className="text-xs opacity-50 absolute bottom-1 right-1 group-hover:opacity-100 transition-opacity">
-                      {message.timestamp}
-                    </span>
+                    <p className="text-sm sm:text-base whitespace-pre-wrap">{message.content}</p>
+                    <div className="flex items-center justify-end gap-2 mt-2">
+                      {message.role === 'assistant' && (
+                        <button
+                          onClick={() => handleCopyMessage(message.content, message.id)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-white/10 rounded"
+                          title="Copy message"
+                          aria-label="Copy message"
+                        >
+                          {copiedMessageId === message.id ? (
+                            <FaCheck className="w-3 h-3 text-green-400" />
+                          ) : (
+                            <FaCopy className="w-3 h-3" />
+                          )}
+                        </button>
+                      )}
+                      <span className="text-xs opacity-50 group-hover:opacity-100 transition-opacity">
+                        {message.timestamp}
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -294,7 +455,7 @@ const ChatBot = () => {
             )}
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="p-4 border-t border-white/10">
+            <form onSubmit={handleSubmit} className="p-4 border-t border-white/10 bg-gray-900/50">
               <div className="flex space-x-2">
                 <input
                   ref={inputRef}
@@ -302,20 +463,33 @@ const ChatBot = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Type your message..."
-                  className="flex-1 bg-gray-800/90 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 backdrop-blur-sm border border-white/10"
+                  placeholder={isLoading ? "AI is thinking..." : "Type your message..."}
+                  className="flex-1 bg-gray-800/90 text-white rounded-lg px-4 py-2 text-sm sm:text-base
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 backdrop-blur-sm 
+                           border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={isLoading}
+                  maxLength={500}
                 />
                 <motion.button
                   type="submit"
                   disabled={isLoading || !input.trim()}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-purple-600 
+                           text-white rounded-lg hover:opacity-90 transition-opacity 
+                           disabled:opacity-50 disabled:cursor-not-allowed 
+                           flex items-center justify-center min-w-[44px]"
+                  title="Send message"
+                  aria-label="Send message"
                 >
                   <FaPaperPlane className="w-4 h-4" />
                 </motion.button>
               </div>
+              {input.length > 400 && (
+                <p className="text-xs text-gray-400 mt-1 text-right">
+                  {input.length}/500
+                </p>
+              )}
             </form>
           </motion.div>
         )}

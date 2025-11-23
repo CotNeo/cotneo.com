@@ -126,7 +126,7 @@ const TechStack = () => {
   }, []);
 
   return (
-    <section id="tech-stack" className="relative py-12 sm:py-16 md:py-20">
+    <section id="tech-stack" className="relative py-12 sm:py-16 md:py-20 scroll-mt-24 md:scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 transform ${

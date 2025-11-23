@@ -6,7 +6,7 @@ import { FaLinkedin, FaGithub, FaGlobe, FaYoutube, FaStackOverflow, FaReddit, Fa
 
 const Hero = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8 relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8 relative overflow-hidden pt-16 md:pt-20">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 opacity-90" />
       
