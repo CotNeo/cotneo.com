@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import DownloadCV from './DownloadCV';
-import { FaLinkedin, FaGithub, FaGlobe } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaGlobe, FaYoutube, FaStackOverflow, FaReddit, FaInstagram } from 'react-icons/fa';
 
 const Hero = () => {
   return (
@@ -63,81 +63,27 @@ const Hero = () => {
 
           {/* Social Media Grid */}
           <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 md:gap-6 px-4">
-            {/* Freelancer Profile */}
-            <motion.div
-              whileHover={{ scale: 1.20, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative"
-            >
-              <motion.a
-                href="https://www.freelancer.com/u/furkanaliakar"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#29B2FE] via-[#1E90FF] to-[#0066CC] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
-              >
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#29B2FE]/20 to-[#0066CC]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
-                
-                {/* Icon and text */}
-                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
-                  </div>
-                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Freelancer</span>
-                </div>
-
-                {/* Hover indicator */}
-                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </motion.a>
-            </motion.div>
-            {/* CODERSPACE */}
-            <motion.div
-              whileHover={{ scale: 1.20, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative"
-            >
-              <motion.a
-                href="https://coderspace.io/portfolyo/furkan798/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#29B2FE] via-[#1E90FF] to-[#0066CC] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
-              >
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#29B2FE]/20 to-[#0066CC]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
-                
-                {/* Icon and text */}
-                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
-                  </div>
-                  <span className="text-xs sm:text-sm font-semibold tracking-wide">CODERSPASE</span>
-                </div>
-
-                {/* Hover indicator */}
-                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </motion.a>
-            </motion.div>
-            {/* Bionluk Profile */}
+            {/* LinkedIn Profile - Professional Network */}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               className="group relative"
             >
               <motion.a
-                href="https://bionluk.com/furkanaliakar"
+                href="https://www.linkedin.com/in/furkanaliakar/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#FF6B35] via-[#F7931E] to-[#E67E22] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#0077B5] via-[#006699] to-[#004471] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
               >
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B35]/20 to-[#E67E22]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0077B5]/20 to-[#004471]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
                 
                 {/* Icon and text */}
                 <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
                   <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                    <FaLinkedin className="w-4 h-4 sm:w-6 sm:h-6" />
                   </div>
-                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Bionluk</span>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">LinkedIn</span>
                 </div>
 
                 {/* Hover indicator */}
@@ -145,7 +91,7 @@ const Hero = () => {
               </motion.a>
             </motion.div>
 
-            {/* GitHub Profile */}
+            {/* GitHub Profile - Code Repository */}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
@@ -173,27 +119,251 @@ const Hero = () => {
               </motion.a>
             </motion.div>
 
-            {/* LinkedIn Profile */}
+            {/* YouTube Profile - Content Platform */}
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               className="group relative"
             >
               <motion.a
-                href="https://www.linkedin.com/in/furkanaliakar/"
+                href="https://www.youtube.com/@cotneo_js"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#0077B5] via-[#006699] to-[#004471] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#FF0000] via-[#CC0000] to-[#990000] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
               >
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#0077B5]/20 to-[#004471]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#FF0000]/20 to-[#990000]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
                 
                 {/* Icon and text */}
                 <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
                   <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaLinkedin className="w-4 h-4 sm:w-6 sm:h-6" />
+                    <FaYoutube className="w-4 h-4 sm:w-6 sm:h-6" />
                   </div>
-                  <span className="text-xs sm:text-sm font-semibold tracking-wide">LinkedIn</span>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">YouTube</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* Instagram Profile - Social Media Platform */}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://www.instagram.com/furkanaliakar/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#E4405F] via-[#F56040] to-[#FCAF45] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#E4405F]/20 via-[#F56040]/20 to-[#FCAF45]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaInstagram className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Instagram</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* Medium Profile - Blog Platform */}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://medium.com/@furkanaliakar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-700/20 to-black/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Medium</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* freeCodeCamp Profile - Learning Platform */}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://www.freecodecamp.org/cotneo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#0A0A23] via-[#006400] to-[#228B22] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#006400]/20 to-[#228B22]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">freeCodeCamp</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* CODERSPACE Profile - Learning Platform */}
+            <motion.div
+              whileHover={{ scale: 1.20, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://coderspace.io/portfolyo/furkan798/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#29B2FE] via-[#1E90FF] to-[#0066CC] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#29B2FE]/20 to-[#0066CC]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">CODERSPASE</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* Stack Overflow Profile - Developer Community */}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://stackoverflow.com/users/25318290/cotneo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#F48024] via-[#E7700D] to-[#BC5500] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#F48024]/20 to-[#BC5500]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaStackOverflow className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Stack Overflow</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* Reddit Profile - Community Platform */}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://www.reddit.com/user/Sweet-Vanilla-3541/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#FF4500] via-[#FF5700] to-[#CC3700] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#FF4500]/20 to-[#CC3700]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaReddit className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Reddit</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* Freelancer Profile - Freelance Platform */}
+            <motion.div
+              whileHover={{ scale: 1.20, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://www.freelancer.com/u/furkanaliakar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#29B2FE] via-[#1E90FF] to-[#0066CC] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#29B2FE]/20 to-[#0066CC]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Freelancer</span>
+                </div>
+
+                {/* Hover indicator */}
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+            </motion.div>
+
+            {/* Bionluk Profile - Turkish Freelance Platform */}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative"
+            >
+              <motion.a
+                href="https://bionluk.com/furkanaliakar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#FF6B35] via-[#F7931E] to-[#E67E22] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B35]/20 to-[#E67E22]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                
+                {/* Icon and text */}
+                <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">Bionluk</span>
                 </div>
 
                 {/* Hover indicator */}
