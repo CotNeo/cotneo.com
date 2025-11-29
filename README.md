@@ -52,6 +52,13 @@ OPENAI_API_KEY=your_openai_api_key_here
 KV_REST_API_URL=https://your-kv-rest-api-url.vercel.app
 KV_REST_API_TOKEN=your_kv_rest_api_token_here
 KV_REST_API_READ_ONLY_TOKEN=your_kv_rest_api_read_only_token_here
+
+# GitHub Configuration (Optional but recommended)
+# Get your token from: https://github.com/settings/tokens
+# Create a token with 'public_repo' scope
+# Without token: 60 requests/hour (unauthenticated)
+# With token: 5000 requests/hour (authenticated)
+GITHUB_TOKEN=your_github_personal_access_token_here
 ```
 
 Run the development server:
