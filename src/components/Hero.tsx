@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import DownloadCV from './DownloadCV';
-import { FaLinkedin, FaGithub, FaGlobe, FaYoutube, FaStackOverflow, FaReddit, FaInstagram } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaYoutube, FaStackOverflow, FaReddit, FaInstagram } from 'react-icons/fa';
 
 const Hero = () => {
   return (
@@ -192,8 +193,15 @@ const Hero = () => {
                 
                 {/* Icon and text */}
                 <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                    <Image 
+                      src="/images/icons/Medium-Logo-3--Streamline-Logos-Block.png" 
+                      alt="Medium" 
+                      width={24} 
+                      height={24} 
+                      className="w-4 h-4 sm:w-6 sm:h-6 object-contain"
+                      unoptimized
+                    />
                   </div>
                   <span className="text-xs sm:text-sm font-semibold tracking-wide">Medium</span>
                 </div>
@@ -220,8 +228,15 @@ const Hero = () => {
                 
                 {/* Icon and text */}
                 <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                    <Image 
+                      src="/images/icons/Freecodecamp-Logo--Streamline-Ultimate.png" 
+                      alt="freeCodeCamp" 
+                      width={24} 
+                      height={24} 
+                      className="w-4 h-4 sm:w-6 sm:h-6 object-contain"
+                      unoptimized
+                    />
                   </div>
                   <span className="text-xs sm:text-sm font-semibold tracking-wide">freeCodeCamp</span>
                 </div>
@@ -233,7 +248,7 @@ const Hero = () => {
 
             {/* CODERSPACE Profile - Learning Platform */}
             <motion.div
-              whileHover={{ scale: 1.20, y: -5 }}
+              whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               className="group relative"
             >
@@ -241,17 +256,24 @@ const Hero = () => {
                 href="https://coderspace.io/portfolyo/furkan798/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#29B2FE] via-[#1E90FF] to-[#0066CC] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#1E88E5] via-[#1565C0] to-[#0D47A1] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
               >
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#29B2FE]/20 to-[#0066CC]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1E88E5]/20 to-[#0D47A1]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
                 
                 {/* Icon and text */}
                 <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                    <Image 
+                      src="/images/icons/coderspace.png" 
+                      alt="CODERSPACE" 
+                      width={24} 
+                      height={24} 
+                      className="w-4 h-4 sm:w-6 sm:h-6 object-contain"
+                      unoptimized
+                    />
                   </div>
-                  <span className="text-xs sm:text-sm font-semibold tracking-wide">CODERSPASE</span>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide">CODERSPACE</span>
                 </div>
 
                 {/* Hover indicator */}
@@ -317,7 +339,7 @@ const Hero = () => {
 
             {/* Freelancer Profile - Freelance Platform */}
             <motion.div
-              whileHover={{ scale: 1.20, y: -5 }}
+              whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               className="group relative"
             >
@@ -325,15 +347,22 @@ const Hero = () => {
                 href="https://www.freelancer.com/u/furkanaliakar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#29B2FE] via-[#1E90FF] to-[#0066CC] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#00B4D8] via-[#0096C7] to-[#0077B6] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:rotate-3 min-w-[80px] sm:min-w-[100px]"
               >
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#29B2FE]/20 to-[#0066CC]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#00B4D8]/20 to-[#0077B6]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
                 
                 {/* Icon and text */}
                 <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                    <Image 
+                      src="/images/icons/freelancer.png" 
+                      alt="Freelancer" 
+                      width={24} 
+                      height={24} 
+                      className="w-4 h-4 sm:w-6 sm:h-6 object-contain"
+                      unoptimized
+                    />
                   </div>
                   <span className="text-xs sm:text-sm font-semibold tracking-wide">Freelancer</span>
                 </div>
@@ -353,15 +382,22 @@ const Hero = () => {
                 href="https://bionluk.com/furkanaliakar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#FF6B35] via-[#F7931E] to-[#E67E22] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
+                className="relative block p-3 sm:p-4 bg-gradient-to-br from-[#FF6B00] via-[#FF8C00] to-[#FF6B35] text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:-rotate-3 min-w-[80px] sm:min-w-[100px]"
               >
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B35]/20 to-[#E67E22]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B00]/20 to-[#FF6B35]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
                 
                 {/* Icon and text */}
                 <div className="relative z-10 flex flex-col items-center space-y-1 sm:space-y-2">
-                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <FaGlobe className="w-4 h-4 sm:w-6 sm:h-6" />
+                  <div className="p-2 sm:p-3 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                    <Image 
+                      src="/images/icons/bionluk.png" 
+                      alt="Bionluk" 
+                      width={24} 
+                      height={24} 
+                      className="w-4 h-4 sm:w-6 sm:h-6 object-contain"
+                      unoptimized
+                    />
                   </div>
                   <span className="text-xs sm:text-sm font-semibold tracking-wide">Bionluk</span>
                 </div>
