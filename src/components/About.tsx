@@ -38,21 +38,28 @@ const About = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className={`relative w-full max-w-md mx-auto transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`} style={{ aspectRatio: '1/1' }}>
-            {/* Outer glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-2xl blur-xl animate-pulse"></div>
-            
-            {/* Image container */}
-            <div className="relative w-full h-full group">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl transform rotate-3 opacity-90 transition-transform duration-500 group-hover:rotate-6"></div>
-              <div className="absolute inset-0 bg-gray-900/90 backdrop-blur-sm rounded-2xl p-2 transition-transform duration-500 group-hover:scale-[0.98]">
-                <div className="relative w-full h-full bg-gray-900/50 rounded-xl overflow-hidden backdrop-blur-sm">
+          <div
+            className={`relative w-full max-w-md mx-auto transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}
+          >
+            {/* Outer glow — motion-safe avoids constant repaints for reduced-motion users */}
+            <div
+              className="absolute -inset-2 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-2xl blur-xl motion-safe:animate-pulse"
+              aria-hidden
+            />
+
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl transform rotate-3 opacity-90 transition-transform duration-500 group-hover:rotate-6" />
+              <div className="relative rounded-2xl bg-gray-900/90 p-2 transition-transform duration-500 group-hover:scale-[0.99]">
+                <div className="relative overflow-hidden rounded-xl bg-gray-950">
+                  {/* Intrinsic width/height avoids fill + aspect-ratio clipping the portrait */}
                   <Image
                     src="/images/profile-optimized.webp"
-                    alt="Profile"
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover rounded-xl transition-all duration-700 group-hover:scale-110 group-hover:rotate-3"
+                    alt="Professional headshot"
+                    width={800}
+                    height={1200}
+                    sizes="(max-width: 768px) min(100vw - 2rem, 28rem), 448px"
+                    quality={85}
+                    className="h-auto w-full object-contain object-top"
                   />
                 </div>
               </div>
