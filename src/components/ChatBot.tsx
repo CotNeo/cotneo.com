@@ -33,14 +33,14 @@ const formatTimestamp = (): string => {
 };
 
 const SUGGESTION_QUESTIONS = [
-  "Tell me about your frontend development skills",
-  "What projects have you worked on?",
-  "What's your professional background?",
-  "What technologies do you use the most?",
-  "What are your main interests in tech?",
-  "Can you tell me about your experience?",
-  "What databases do you work with?",
-  "Tell me about your cloud expertise"
+  "What does Furkan do in his current role?",
+  "What projects has he built?",
+  "What's his experience with mobile development?",
+  "Which technologies does he use in production?",
+  "What's his backend and database experience?",
+  "Tell me about his AI and automation projects",
+  "What is he learning right now?",
+  "How can I contact him?"
 ];
 
 const ChatBot = () => {
@@ -129,13 +129,6 @@ const ChatBot = () => {
       setTypingIndicator('');
     }
   }, [isTyping]);
-
-  /**
-   * Gets count of user messages
-   */
-  const getUserMessageCount = useCallback(() => {
-    return messages.filter(msg => msg.role === 'user').length;
-  }, [messages]);
 
   /**
    * Copies message content to clipboard
@@ -237,7 +230,7 @@ const ChatBot = () => {
       });
 
       // Update suggestions based on context
-      setSuggestions(prev => {
+      setSuggestions(() => {
         const remainingSuggestions = SUGGESTION_QUESTIONS.filter(q => 
           q !== suggestedQuestion && 
           !currentMessages.some(m => m.role === 'user' && m.content === q)
@@ -321,13 +314,13 @@ const ChatBot = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold 
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 px-4 py-2 sm:px-6 sm:py-3 bg-teal-500 text-white rounded-lg font-semibold 
                  shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 overflow-hidden group
                  backdrop-blur-sm bg-opacity-90 border border-white/10 z-50"
         aria-label={isOpen ? "Close chat" : "Open chat"}
       >
         {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 
+        <div className="absolute inset-0 bg-teal-400/20 
                       group-hover:opacity-100 opacity-0 transition-opacity duration-300" />
         
         {/* Button content */}
@@ -350,7 +343,7 @@ const ChatBot = () => {
                      flex flex-col overflow-hidden z-50 max-h-[calc(100vh-6rem)]"
           >
             {/* Header */}
-            <div className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 flex justify-between items-center">
+            <div className="p-4 bg-teal-500 flex justify-between items-center">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
                   <FaRobot className="w-5 h-5 text-white" />
@@ -475,7 +468,7 @@ const ChatBot = () => {
                   disabled={isLoading || !input.trim()}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-purple-600 
+                  className="px-3 py-2 sm:px-4 sm:py-2 bg-teal-500 
                            text-white rounded-lg hover:opacity-90 transition-opacity 
                            disabled:opacity-50 disabled:cursor-not-allowed 
                            flex items-center justify-center min-w-[44px]"

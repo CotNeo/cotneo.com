@@ -1,87 +1,100 @@
-'use client';
-/* eslint-disable react/no-unescaped-entities */
-
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Reveal from './ui/Reveal';
+import SectionHeading from './ui/SectionHeading';
+
+const strengths = [
+  {
+    title: 'Across the stack, for real',
+    text: 'React and Next.js on the web, native Android and React Native on mobile, .NET and Node.js behind them — plus the Oracle procedures they all talk to.',
+  },
+  {
+    title: 'Production first',
+    text: 'My daily work runs in live logistics operations. When a barcode fails to print or an invoice flow breaks, I trace it through the app, the API and the database.',
+  },
+  {
+    title: 'Legacy meets modern',
+    text: 'Comfortable connecting SOAP services and PL/SQL packages to modern REST APIs and mobile clients — and documenting how it all fits together.',
+  },
+  {
+    title: 'Product mindset',
+    text: 'I build and run my own things: an AI-assisted CV builder, a RAG chatbot, automation tools and a live e-commerce store.',
+  },
+];
 
 const About = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
-
-    const section = document.getElementById('about');
-    if (section) {
-      observer.observe(section);
-    }
-
-    return () => {
-      if (section) {
-        observer.unobserve(section);
-      }
-    };
-  }, []);
-
   return (
-    <section id="about" className="relative py-20 scroll-mt-24 md:scroll-mt-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`text-center mb-16 transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
-          <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 hover:scale-105 transition-transform duration-300">
-            About Me
-          </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-blue-400 to-purple-600 mx-auto rounded-full transition-all duration-500 hover:w-32"></div>
-        </div>
+    <section id="about" className="relative py-20 md:py-28 scroll-mt-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeading
+          index="01"
+          label="about"
+          title="Software that has to work on the warehouse floor"
+          lede="Not every bug shows up in a browser console. Some of them show up as a courier holding a label that won't print."
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div
-            className={`relative w-full max-w-md mx-auto transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}
-          >
-            {/* Outer glow — motion-safe avoids constant repaints for reduced-motion users */}
-            <div
-              className="absolute -inset-2 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-2xl blur-xl motion-safe:animate-pulse"
-              aria-hidden
-            />
-
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl transform rotate-3 opacity-90 transition-transform duration-500 group-hover:rotate-6" />
-              <div className="relative rounded-2xl bg-gray-900/90 p-2 transition-transform duration-500 group-hover:scale-[0.99]">
-                <div className="relative overflow-hidden rounded-xl bg-gray-950">
-                  {/* Intrinsic width/height avoids fill + aspect-ratio clipping the portrait */}
-                  <Image
-                    src="/images/profile-optimized.webp"
-                    alt="Professional headshot"
-                    width={800}
-                    height={1200}
-                    sizes="(max-width: 768px) min(100vw - 2rem, 28rem), 448px"
-                    quality={85}
-                    className="h-auto w-full object-contain object-top"
-                  />
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,320px)_1fr] gap-10 md:gap-14 items-start">
+          {/* Photo */}
+          <Reveal>
+            <div className="panel p-2 max-w-xs mx-auto md:mx-0">
+              <div className="relative overflow-hidden rounded-lg bg-ink">
+                <Image
+                  src="/images/profile-optimized.webp"
+                  alt="Furkan Akar"
+                  width={800}
+                  height={1200}
+                  sizes="(max-width: 768px) min(100vw - 2rem, 20rem), 320px"
+                  quality={85}
+                  className="h-auto w-full object-contain object-top"
+                />
+              </div>
+              <div className="px-3 py-3 font-mono text-xs text-mist flex items-center justify-between">
+                <span>Istanbul, TR</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  open to work
+                </span>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className={`space-y-6 transition-all duration-1000 delay-300 transform ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
-            <p className="text-gray-300/90 mb-4">
-              I am a full-stack developer with expertise in modern web technologies. Let us build something amazing together!
-            </p>
-            <p className="text-lg text-gray-100 leading-relaxed hover:text-blue-300 transition-colors duration-300">
-            I am a passionate full-stack developer with expertise in cloud and AI integrations, constantly pushing the boundaries of innovation. 
-            My focus is on building scalable and efficient solutions 
-            that enhance user experience and streamline complex workflows.
-            </p>
-            <p className="text-lg text-gray-100 leading-relaxed hover:text-purple-300 transition-colors duration-300">
-            With a strong foundation in Next.js, TypeScript, and backend technologies, I specialize in developing high-performance applications that leverage modern frameworks and architectures.
-             My goal is to create seamless digital experiences through clean code and best practices.
-            </p>
-            <p className="text-lg text-gray-100 leading-relaxed hover:text-indigo-300 transition-colors duration-300">
-            Beyond coding, I am always eager to learn and experiment with emerging technologies. Whether it's optimizing backend services or enhancing UI/UX, I thrive on challenges that push me to grow as a developer and problem solver.
-            </p>
+          {/* Text */}
+          <div className="space-y-6">
+            <Reveal>
+              <p className="text-base md:text-lg text-fog leading-relaxed">
+                I&apos;m a full-stack and mobile developer based in Istanbul. Right now I build
+                operational software for a nationwide logistics company: native Android apps
+                running on Zebra handheld terminals, .NET 8 APIs, and Oracle PL/SQL procedures
+                that together handle shipments, invoices and barcode operations every day.
+              </p>
+            </Reveal>
+            <Reveal delay={80}>
+              <p className="text-base md:text-lg text-fog leading-relaxed">
+                Before that, I operated the security technology of the same logistics network —
+                a fleet of around 1,300 CCTV and access devices. That&apos;s where I learned to take
+                production systems seriously: monitoring, incident analysis, and clear
+                communication when something breaks at 3 a.m.
+              </p>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="text-base md:text-lg text-fog leading-relaxed">
+                On my own time I ship web products — Next.js, TypeScript, Node.js — and
+                experiment with practical AI: retrieval-augmented chatbots, embeddings,
+                automation. I&apos;m aiming at international, remote-friendly teams where I can keep
+                growing toward cloud, DevOps and system design.
+              </p>
+            </Reveal>
+
+            {/* Strengths grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+              {strengths.map((s, i) => (
+                <Reveal key={s.title} delay={i * 70}>
+                  <div className="panel panel-hover p-5 h-full">
+                    <h3 className="text-sm font-semibold text-white mb-2">{s.title}</h3>
+                    <p className="text-sm text-mist leading-relaxed">{s.text}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -89,4 +102,4 @@ const About = () => {
   );
 };
 
-export default About; 
+export default About;

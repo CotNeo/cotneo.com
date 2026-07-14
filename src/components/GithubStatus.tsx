@@ -19,6 +19,8 @@ interface GithubStats {
     totalForks: number;
   };
   languages: LanguageStats[];
+  _cached?: boolean;
+  _message?: string;
 }
 
 interface LanguageStats {
@@ -106,21 +108,21 @@ const GithubStatus = () => {
 
   return (
     <section id="github" className="relative py-20 scroll-mt-24 md:scroll-mt-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`text-center mb-16 transition-all duration-1000 transform ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`mb-12 md:mb-16 max-w-3xl transition-all duration-1000 transform ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
-          <h2 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 hover:scale-105 transition-transform duration-300">
-            GitHub Overview
+          <p className="section-label mb-3">05 / github</p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
+            Open source activity
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-blue-400 to-purple-600 mx-auto rounded-full transition-all duration-500 hover:w-32"></div>
-          <p className="mt-4 text-xl text-gray-300/90">
-            My GitHub activity and contributions
+          <p className="mt-4 text-base md:text-lg text-mist leading-relaxed">
+            Live stats pulled from the GitHub API.
           </p>
-          {stats && (stats as any)._cached && (
+          {stats && stats._cached && (
             <div className="mt-4 px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-sm text-yellow-400">
-              <p className="font-medium mb-1">⚠️ {(stats as any)._message || 'Showing cached/fallback data'}</p>
-              {(stats as any)._message?.includes('Invalid') || (stats as any)._message?.includes('token') ? (
+              <p className="font-medium mb-1">⚠️ {stats._message || 'Showing cached/fallback data'}</p>
+              {stats._message?.includes('Invalid') || stats._message?.includes('token') ? (
                 <p className="text-xs text-yellow-300/80 mt-1">
                   Create a token at{' '}
                   <a 
@@ -131,7 +133,7 @@ const GithubStatus = () => {
                   >
                     github.com/settings/tokens
                   </a>
-                  {' '}with 'public_repo' scope
+                  {' '}with &apos;public_repo&apos; scope
                 </p>
               ) : null}
             </div>
@@ -364,7 +366,7 @@ const GithubStatus = () => {
             href="https://github.com/cotneo"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-[1.02] font-medium"
+            className="inline-flex items-center px-5 py-3 rounded-md border border-edge text-fog font-semibold text-sm hover:border-accent/50 hover:text-white transition-colors duration-200"
           >
             View GitHub Profile
             <svg className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

@@ -88,59 +88,54 @@ Response Style:
 About Furkan:
 Personal:
 - Name: Furkan Akar
-- Role: Full Stack Developer
-- Location: Turkey
-- Education: Computer Engineering
-- Languages: Turkish, English
-- Personality: Passionate about technology, always learning, and enjoys solving complex problems
-- Summary: A passionate Full Stack Developer specializing in MERN stack and modern web technologies
+- Role: Full-Stack & Mobile Software Developer
+- Location: Istanbul, Türkiye
+- Education: Computer Programming at Istanbul University AUZEF (ongoing); previously studied Mechanical Engineering at Istanbul University–Cerrahpaşa
+- Languages: Turkish (native), English (B1–B2, reads technical docs and communicates in writing), French (beginner)
+- Summary: A full-stack and mobile developer who works across modern web (React, Next.js, TypeScript, Node.js) and enterprise systems (.NET 8, native Android with Java, Oracle PL/SQL, barcode and printing hardware)
+
+Current Role:
+- Operational Software / Mobile Software Specialist at a nationwide logistics company in Istanbul
+- Builds native Android (Java) apps that run on Zebra handheld terminals in the field
+- Develops .NET 8 Web APIs in C# connecting mobile clients to Oracle stored procedures and packages
+- Works on shipment, invoicing and delivery-point workflows, including marketplace orders (Amazon/Trendyol/N11-style platforms)
+- Implements label and barcode printing to Zebra printers over TCP sockets (port 9100) using ZPL and EPL
+- Integrates SOAP services, Bearer-token authentication and deep links between enterprise Android apps
+- Debugs production issues end to end: Android logcat, network logs, API traces and Oracle error analysis
+- Writes test-case matrices and UAT scenarios; uses Azure DevOps, APK release builds and .NET publish pipelines
+
+Previous Role:
+- Risk & security systems operations at the same logistics organization
+- Monitored a fleet of roughly 1,300 CCTV and security devices, managed access authorizations, IP changes and incident analysis
 
 Skills:
-- Frontend: React, Next.js, TypeScript, Tailwind CSS, React Bootstrap, Redux, Three.js
-- Backend: Node.js, Express, JWT, bcrypt, multer
-- Database: MongoDB, PostgreSQL, Mongoose
-- Cloud: AWS, Vercel, Docker, Netlify, CI/CD Pipelines
-- Testing: Jest, Cypress, Supertest
-- Tools: Git, VS Code, Postman, Vite, npm
+- Frontend: React 18/19, Next.js (App Router), TypeScript, Tailwind CSS, Redux Toolkit, React Hook Form, Zod
+- Backend: Node.js, Express, .NET 8 Web API, C#, REST design, SOAP integrations, JWT/Bearer auth, GraphQL, Socket.io, FastAPI
+- Mobile: Native Android (Java), React Native CLI, Expo, Retrofit, deep linking, APK release builds
+- Databases: Oracle (PL/SQL, stored procedures, packages), MongoDB/Mongoose, MySQL, PostgreSQL
+- Enterprise/hardware: Zebra handheld terminals and printers, ZPL/EPL, TCP socket printing, barcode workflows
+- DevOps: Git, GitHub, GitHub Actions, Azure DevOps, Docker, Nginx, Linux/VPS, Vercel
+- AI & automation: OpenAI API, RAG with Qdrant and embeddings, Ollama, Selenium, Puppeteer
+- Testing: Jest, Supertest, Vitest, React Testing Library, test-case/UAT design
 
 Projects:
-1. Personal Portfolio
-   - Description: A modern portfolio website with 3D animations and AI chatbot
-   - Technologies: Next.js, TypeScript, Three.js, Tailwind CSS
-   - Features: 3D Animations, AI Chat Assistant, Responsive Design, Dark Mode
-   - Link: https://cotneo.com
-   - Fun Fact: The 3D background was inspired by modern tech aesthetics
+1. CV Generator SaaS — a SaaS app for building professional CVs: templates, live preview, PDF export, auth and user data management (Next.js, TypeScript, Node.js, MongoDB)
+2. RAG Chatbot — document-grounded AI chatbot using Qdrant vector search and all-MiniLM-L6-v2 embeddings
+3. WhatsApp Lead Automation — lead tracking and messaging workflow automation with Selenium
+4. Live OpenCart e-commerce store — running in production with real orders, self-managed deployment
+5. 3D Globe — Cesium-based geospatial visualization in React
+6. Also: Nutrition App, MERN task manager, HubX News, Meveddet SPA
+- More at https://github.com/CotNeo
 
-2. Full Stack Applications
-   - Description: Various MERN stack applications with modern features
-   - Technologies: React, Node.js, MongoDB, Express, GraphQL
-   - Features: RESTful APIs, GraphQL Integration, Real-time Updates, Authentication
-   - Link: https://github.com/CotNeo
-   - Fun Fact: Some projects include AI-powered features
-
-Experience:
-- Current Role: Full Stack Developer
-- Years of Experience: 3+
-- Summary: 3+ years of experience in full-stack development, specializing in MERN stack and modern web technologies. Currently preparing for AWS Developer Associate certification.
-- Highlights: Expertise in MERN Stack Development, Building Scalable & Performant Applications, Implementing Microservices Architecture, Web Performance Optimization, DevOps & Automation
-- Fun Fact: Started as a self-taught developer and now working on complex enterprise applications
-
-Interests:
-- Web Development
-- System Design
-- Microservices
-- AI-Driven Applications
-- DevOps Automation
-- Cloud Computing
-- Web Performance
-- Open Source
-- Fun Fact: Particularly interested in the intersection of AI and web development
+Career Goals:
+- Working with international or global teams, remote or relocation-supported
+- Growing in full-stack, backend, mobile or product engineering roles
+- Currently learning AWS, system design and deeper .NET/cloud practice
 
 Certifications:
 1. Full Stack Open Certificate (University of Helsinki)
 2. Full Stack GraphQL Certificate (University of Helsinki)
-3. AWS Developer Associate (In Progress)
-- Fun Fact: The Full Stack Open course was completed with distinction`;
+3. AWS certification (currently preparing)`;
 
 const SYSTEM_PROMPT_TR = `Sen Furkan'ın AI asistanısın, ChatGPT gibi doğal ve samimi konuşmalar yapmak için tasarlandın. Furkan'ın profesyonel geçmişi hakkında konuşurken dostane, yardımcı ve ilgi çekici olmalısın.
 
@@ -174,59 +169,54 @@ Yanıt Tarzı:
 Furkan Hakkında:
 Kişisel:
 - İsim: Furkan Akar
-- Rol: Full Stack Developer
-- Konum: Türkiye
-- Eğitim: Bilgisayar Mühendisliği
-- Diller: Türkçe, İngilizce
-- Kişilik: Teknolojiye tutkulu, sürekli öğrenen ve karmaşık problemleri çözmeyi seven
-- Özet: MERN stack ve modern web teknolojilerinde uzmanlaşmış tutkulu bir Full Stack Developer
+- Rol: Full-Stack & Mobil Yazılım Geliştirici
+- Konum: İstanbul, Türkiye
+- Eğitim: İstanbul Üniversitesi AUZEF Bilgisayar Programcılığı (devam ediyor); öncesinde İstanbul Üniversitesi-Cerrahpaşa Makine Mühendisliği
+- Diller: Türkçe (ana dil), İngilizce (B1–B2, teknik doküman okur ve yazılı iletişim kurar), Fransızca (başlangıç)
+- Özet: Modern web (React, Next.js, TypeScript, Node.js) ile kurumsal sistemler (.NET 8, Java ile native Android, Oracle PL/SQL, barkod ve yazıcı donanımları) arasında çalışan bir full-stack ve mobil geliştirici
+
+Mevcut Rol:
+- İstanbul'da ulusal çapta bir lojistik firmasında Operasyonel Yazılımlar / Mobil Yazılım Uzmanı
+- Sahada Zebra el terminallerinde çalışan native Android (Java) uygulamaları geliştiriyor
+- Mobil istemcileri Oracle stored procedure ve package'lara bağlayan .NET 8 Web API servisleri (C#) yazıyor
+- Sipariş, fatura ve teslimat noktası akışları üzerinde çalışıyor; Amazon/Trendyol/N11 benzeri platform siparişleri dahil
+- Zebra yazıcılara TCP soket (9100 portu) üzerinden ZPL ve EPL ile etiket/barkod baskısı geliştiriyor
+- SOAP servis entegrasyonları, Bearer token kimlik doğrulama ve kurumsal Android uygulamaları arası deep link entegrasyonları yapıyor
+- Üretim hatalarını uçtan uca ayıklıyor: Android logcat, network logları, API izleri ve Oracle hata analizi
+- Test case matrisleri ve UAT senaryoları yazıyor; Azure DevOps, APK release build ve .NET publish süreçlerini yönetiyor
+
+Önceki Rol:
+- Aynı lojistik organizasyonunda risk ve güvenlik sistemleri operasyonları
+- Yaklaşık 1.300 CCTV ve güvenlik cihazından oluşan filoyu izledi; yetkilendirme, IP değişiklikleri ve olay analizi yaptı
 
 Yetenekler:
-- Frontend: React, Next.js, TypeScript, Tailwind CSS, React Bootstrap, Redux, Three.js
-- Backend: Node.js, Express, JWT, bcrypt, multer
-- Veritabanı: MongoDB, PostgreSQL, Mongoose
-- Cloud: AWS, Vercel, Docker, Netlify, CI/CD Pipelines
-- Test: Jest, Cypress, Supertest
-- Araçlar: Git, VS Code, Postman, Vite, npm
+- Frontend: React 18/19, Next.js (App Router), TypeScript, Tailwind CSS, Redux Toolkit, React Hook Form, Zod
+- Backend: Node.js, Express, .NET 8 Web API, C#, REST tasarımı, SOAP entegrasyonları, JWT/Bearer auth, GraphQL, Socket.io, FastAPI
+- Mobil: Native Android (Java), React Native CLI, Expo, Retrofit, deep linking, APK release build
+- Veritabanları: Oracle (PL/SQL, stored procedure, package), MongoDB/Mongoose, MySQL, PostgreSQL
+- Kurumsal/donanım: Zebra el terminalleri ve yazıcıları, ZPL/EPL, TCP soket baskı, barkod iş akışları
+- DevOps: Git, GitHub, GitHub Actions, Azure DevOps, Docker, Nginx, Linux/VPS, Vercel
+- AI ve otomasyon: OpenAI API, Qdrant ve embedding ile RAG, Ollama, Selenium, Puppeteer
+- Test: Jest, Supertest, Vitest, React Testing Library, test case/UAT tasarımı
 
 Projeler:
-1. Kişisel Portfolio
-   - Açıklama: 3D animasyonlar ve AI chatbot içeren modern bir portfolio web sitesi
-   - Teknolojiler: Next.js, TypeScript, Three.js, Tailwind CSS
-   - Özellikler: 3D Animasyonlar, AI Chat Asistanı, Responsive Tasarım, Dark Mode
-   - Link: https://cotneo.com
-   - İlginç Bilgi: 3D arka plan modern teknoloji estetiğinden ilham alındı
+1. CV Generator SaaS — profesyonel CV hazırlama SaaS uygulaması: şablonlar, canlı önizleme, PDF üretimi, auth ve kullanıcı verisi yönetimi (Next.js, TypeScript, Node.js, MongoDB)
+2. RAG Chatbot — Qdrant vektör arama ve all-MiniLM-L6-v2 embedding kullanan doküman tabanlı AI chatbot
+3. WhatsApp Lead Automation — Selenium ile müşteri adayı takibi ve mesajlaşma otomasyonu
+4. Canlı OpenCart e-ticaret sitesi — üretimde gerçek siparişlerle çalışan, kendi yönettiği sunucuda
+5. 3D Globe — React içinde Cesium tabanlı jeouzamsal görselleştirme
+6. Ayrıca: Nutrition App, MERN görev yöneticisi, HubX News, Meveddet SPA
+- Daha fazlası: https://github.com/CotNeo
 
-2. Full Stack Uygulamalar
-   - Açıklama: Modern özellikler içeren çeşitli MERN stack uygulamaları
-   - Teknolojiler: React, Node.js, MongoDB, Express, GraphQL
-   - Özellikler: RESTful API'ler, GraphQL Entegrasyonu, Gerçek Zamanlı Güncellemeler, Kimlik Doğrulama
-   - Link: https://github.com/CotNeo
-   - İlginç Bilgi: Bazı projeler AI destekli özellikler içeriyor
-
-Deneyim:
-- Mevcut Rol: Full Stack Developer
-- Deneyim Yılı: 3+
-- Özet: MERN stack ve modern web teknolojilerinde uzmanlaşmış, 3+ yıllık full-stack geliştirme deneyimi. Şu anda AWS Developer Associate sertifikası için hazırlanıyor.
-- Öne Çıkanlar: MERN Stack Geliştirme Uzmanlığı, Ölçeklenebilir ve Performanslı Uygulamalar İnşa Etme, Mikroservis Mimarisi Uygulama, Web Performans Optimizasyonu, DevOps ve Otomasyon
-- İlginç Bilgi: Kendi kendine öğrenen bir geliştirici olarak başladı ve şimdi karmaşık kurumsal uygulamalar üzerinde çalışıyor
-
-İlgi Alanları:
-- Web Geliştirme
-- Sistem Tasarımı
-- Mikroservisler
-- AI Destekli Uygulamalar
-- DevOps Otomasyonu
-- Cloud Computing
-- Web Performansı
-- Açık Kaynak
-- İlginç Bilgi: Özellikle AI ve web geliştirmenin kesişim noktasıyla ilgileniyor
+Kariyer Hedefleri:
+- Uluslararası veya global ekiplerle remote ya da relocation destekli çalışmak
+- Full-stack, backend, mobil veya product engineering rollerinde ilerlemek
+- Şu anda AWS, sistem tasarımı ve daha derin .NET/cloud pratiği öğreniyor
 
 Sertifikalar:
 1. Full Stack Open Sertifikası (Helsinki Üniversitesi)
 2. Full Stack GraphQL Sertifikası (Helsinki Üniversitesi)
-3. AWS Developer Associate (Devam Ediyor)
-- İlginç Bilgi: Full Stack Open kursu başarıyla tamamlandı`;
+3. AWS sertifikasyonu (hazırlanıyor)`;
 
 // Hata mesajları
 const ERROR_MESSAGES = {
@@ -282,15 +272,15 @@ async function updateChatContext(ip: string, conversationId: string, message: Ch
 
 // Fallback yanıtlar
 const FALLBACK_RESPONSES = {
-  skills: "Furkan is a Full Stack Developer with expertise in both frontend and backend technologies. On the frontend, he's skilled in React, Next.js, TypeScript, Tailwind CSS, and Three.js. For backend, he's proficient in Node.js, Express, and MongoDB. He specializes in building modern, scalable applications using the MERN stack.",
-  projects: "Furkan has worked on several exciting projects! 🚀\n\n1. **Personal Portfolio** - A modern portfolio website (cotneo.com) featuring 3D animations using Three.js, an AI chatbot, and responsive design. Built with Next.js, TypeScript, and Tailwind CSS.\n\n2. **Full Stack Applications** - Various MERN stack applications with features like RESTful APIs, GraphQL integration, real-time updates, and authentication systems. You can check out his GitHub (github.com/CotNeo) for more details.\n\n3. **Cloud-Based Solutions** - Projects deployed on AWS, Vercel, and other cloud platforms with CI/CD pipelines.\n\nAll projects focus on modern web technologies, performance optimization, and creating engaging user experiences!",
-  experience: "With 3+ years of experience, Furkan specializes in full-stack development, focusing on MERN stack and modern web technologies. He's currently preparing for AWS Developer Associate certification. His expertise includes building scalable applications, implementing microservices architecture, web performance optimization, and DevOps automation.",
-  cloud: "Furkan has experience with various cloud technologies including AWS, Vercel, Docker, and Netlify. He's currently preparing for AWS Developer Associate certification and has worked on deploying and managing cloud-based applications with CI/CD pipelines.",
-  nodejs: "Furkan has extensive experience with Node.js, using it for backend development in various projects. He's proficient in building RESTful APIs, implementing authentication systems, and working with Express.js framework.",
-  threejs: "Furkan has experience with Three.js and 3D web development. He created the 3D background for his portfolio website using Three.js, showcasing his ability to create immersive web experiences. The 3D elements were inspired by modern tech aesthetics and demonstrate his skills in 3D graphics programming.",
-  frontend: "Furkan has strong frontend development skills, specializing in React, Next.js, and TypeScript. He's experienced in building responsive, modern UIs using Tailwind CSS and has created interactive 3D web experiences using Three.js. His frontend work focuses on creating engaging user experiences with attention to performance and accessibility.",
-  database: "Furkan works with both SQL and NoSQL databases. He has extensive experience with **MongoDB** (NoSQL) for document-based storage and **PostgreSQL** (SQL) for relational data. He uses Mongoose as an ODM for MongoDB and has experience with database design, query optimization, and data modeling. His database expertise includes working with complex data structures, implementing efficient queries, and ensuring data integrity in full-stack applications.",
-  default: "I can tell you about Furkan's skills, projects, and experience. What would you like to know specifically?"
+  skills: "Furkan is a Full-Stack & Mobile Software Developer who works across two worlds: modern web (React, Next.js, TypeScript, Node.js) and enterprise systems (.NET 8, C#, native Android with Java, Oracle PL/SQL). In his day job he builds logistics software — Android apps on Zebra handheld terminals, .NET APIs and Oracle procedures — and on his own time he ships web products and AI-powered tools.",
+  projects: "Furkan has built a range of projects:\n\n1. **CV Generator SaaS** — a SaaS app for building professional CVs with templates, PDF export and authentication (Next.js, TypeScript, Node.js, MongoDB).\n\n2. **RAG Chatbot** — a document-grounded AI chatbot using Qdrant vector search and embeddings.\n\n3. **WhatsApp Lead Automation** — lead tracking and messaging workflows automated with Selenium.\n\n4. **Live OpenCart e-commerce store** — running in production with real orders.\n\n5. **3D Globe** — Cesium-based geospatial visualization in React.\n\nMore on his GitHub: github.com/CotNeo",
+  experience: "Furkan currently works as an Operational Software / Mobile Software Specialist at a nationwide logistics company in Istanbul. He builds native Android (Java) apps for Zebra handheld terminals, .NET 8 Web APIs in C#, and Oracle PL/SQL integrations that power shipment, invoicing and barcode workflows in production. Before that, he operated the security technology of the same network — a fleet of ~1,300 CCTV and access devices. He also builds his own web and AI products with Next.js, TypeScript and Node.js.",
+  cloud: "Furkan deploys to Vercel, self-managed Linux/Nginx VPS servers, and uses Docker and GitHub Actions in his projects. At work he uses Azure DevOps for repositories and release pipelines. He's currently learning AWS and preparing for AWS certification.",
+  nodejs: "Furkan uses Node.js and Express for backend development in his own products — REST APIs, authentication, MongoDB integrations. At work his backend stack is .NET 8 Web API with C# talking to Oracle stored procedures, so he's comfortable in both ecosystems.",
+  threejs: "Furkan has worked with 3D and geospatial visualization on the web — including a Cesium-based 3D globe project with WebGL performance tuning and React integration.",
+  frontend: "Furkan builds frontends with React 18/19, Next.js (App Router), TypeScript and Tailwind CSS. He's experienced with Redux Toolkit, React Hook Form and Zod for form-heavy product UIs, and pays attention to responsive design, accessibility and performance.",
+  database: "Furkan works with both relational and document databases. In production he works with **Oracle Database** — PL/SQL, stored procedures and packages behind enterprise APIs — plus MySQL. In his own projects he uses **MongoDB** with Mongoose and has experience with PostgreSQL and TypeORM. He's used to debugging data issues across the API–procedure boundary.",
+  default: "I can tell you about Furkan's skills, projects, and experience — from React and .NET to Android and Oracle. What would you like to know?"
 };
 
 // Suggestion mesajları
@@ -506,8 +496,8 @@ function generateFallbackResponse(message: string, userLanguage: 'tr' | 'en' = '
       lowerMessage.includes('bilgili') || lowerMessage.includes('deneyimli')) {
     return {
       response: userLanguage === 'tr'
-        ? "Furkan, 3+ yıllık deneyime sahip bir Full Stack Developer. MERN stack, modern web teknolojileri, cloud computing (AWS), DevOps ve 3D web geliştirme konularında bilgili. Şu anda AWS Developer Associate sertifikası için hazırlanıyor ve sürekli olarak yeni teknolojiler öğreniyor. Hem frontend hem de backend geliştirme konularında kapsamlı bilgiye sahip."
-        : "Furkan is an experienced Full Stack Developer with 3+ years of experience. He's knowledgeable in MERN stack, modern web technologies, cloud computing (AWS), DevOps, and 3D web development. He's currently preparing for AWS Developer Associate certification and continuously learning new technologies. He has comprehensive knowledge in both frontend and backend development.",
+        ? "Furkan, hem modern web hem de kurumsal sistemlerde çalışan bir Full-Stack & Mobil Yazılım Geliştirici. Lojistik sektöründe üretimde çalışan Android uygulamaları, .NET 8 API'leri ve Oracle PL/SQL entegrasyonları geliştiriyor; kendi projelerinde React, Next.js, TypeScript ve Node.js kullanıyor. Şu anda AWS ve sistem tasarımı öğreniyor."
+        : "Furkan is a Full-Stack & Mobile Software Developer working across modern web and enterprise systems. At his day job he builds production Android apps, .NET 8 APIs and Oracle PL/SQL integrations for logistics operations; in his own projects he works with React, Next.js, TypeScript and Node.js. He's currently learning AWS and system design.",
       suggestions: CONTEXT_SUGGESTIONS.experience
     };
   }
@@ -520,8 +510,8 @@ function generateFallbackResponse(message: string, userLanguage: 'tr' | 'en' = '
       lowerMessage.includes('yapabilir') || lowerMessage.includes('yapabiliyor')) {
     return {
       response: userLanguage === 'tr' 
-        ? "Furkan, MERN stack ve modern web teknolojilerinde uzmanlaşmış bir Full Stack Developer. 3+ yıllık deneyime sahip ve şu anda AWS Developer Associate sertifikası için hazırlanıyor. Ölçeklenebilir uygulamalar geliştirme, mikroservis mimarisi uygulama, web performans optimizasyonu ve DevOps otomasyonu konularında uzman. React, Next.js, Node.js, MongoDB gibi teknolojilerle modern web uygulamaları geliştirebilir."
-        : "Furkan is a Full Stack Developer specializing in MERN stack and modern web technologies. With 3+ years of experience, he's currently preparing for AWS Developer Associate certification. His expertise includes building scalable applications, implementing microservices architecture, web performance optimization, and DevOps automation. He can develop modern web applications using technologies like React, Next.js, Node.js, MongoDB.",
+        ? "Furkan, İstanbul'da bir lojistik firmasında Operasyonel Yazılımlar / Mobil Yazılım Uzmanı olarak çalışıyor. Zebra el terminallerinde çalışan native Android (Java) uygulamaları, .NET 8 Web API'leri ve Oracle PL/SQL entegrasyonları geliştiriyor — sipariş, fatura ve barkod akışları her gün sahada kullanılıyor. Kendi projelerinde React, Next.js, TypeScript, Node.js ve AI entegrasyonlarıyla ürünler geliştiriyor."
+        : "Furkan works as an Operational Software / Mobile Software Specialist at a logistics company in Istanbul. He builds native Android (Java) apps for Zebra handheld terminals, .NET 8 Web APIs and Oracle PL/SQL integrations — shipment, invoicing and barcode flows used in the field every day. On his own time he builds products with React, Next.js, TypeScript, Node.js and AI integrations.",
       suggestions: CONTEXT_SUGGESTIONS.experience
     };
   }
@@ -554,7 +544,7 @@ function generateFallbackResponse(message: string, userLanguage: 'tr' | 'en' = '
       lowerMessage.includes('skill') || lowerMessage.includes('tech') || 
       lowerMessage.includes('technology') || lowerMessage.includes('yetenek')) {
     if (userLanguage === 'tr') {
-      response = "Furkan, hem frontend hem de backend teknolojilerinde uzman bir Full Stack Developer. Frontend'de React, Next.js, TypeScript, Tailwind CSS ve Three.js konularında yetenekli. Backend'de Node.js, Express ve MongoDB konularında deneyimli. Modern, ölçeklenebilir uygulamalar geliştirmek için MERN stack'i kullanıyor.";
+      response = "Furkan iki dünyada birden çalışıyor: modern web (React, Next.js, TypeScript, Node.js) ve kurumsal sistemler (.NET 8, C#, Java ile native Android, Oracle PL/SQL). İş yerinde lojistik yazılımları geliştiriyor — Zebra el terminallerinde Android uygulamaları, .NET API'leri ve Oracle prosedürleri. Kendi zamanında web ürünleri ve AI destekli araçlar geliştiriyor.";
     } else {
       response = FALLBACK_RESPONSES.skills;
     }
@@ -565,7 +555,7 @@ function generateFallbackResponse(message: string, userLanguage: 'tr' | 'en' = '
            lowerMessage.includes('ui') || lowerMessage.includes('interface') ||
            lowerMessage.includes('frontend development') || lowerMessage.includes('frontend skills')) {
     if (userLanguage === 'tr') {
-      response = "Furkan'ın güçlü frontend geliştirme yetenekleri var, React, Next.js ve TypeScript konularında uzman. Tailwind CSS kullanarak responsive, modern UI'lar oluşturma deneyimine sahip ve Three.js ile interaktif 3D web deneyimleri yaratmış. Frontend çalışmaları performans ve erişilebilirliğe dikkat ederek etkileyici kullanıcı deneyimleri oluşturmaya odaklanıyor.";
+      response = "Furkan frontend tarafında React 18/19, Next.js (App Router), TypeScript ve Tailwind CSS kullanıyor. Form ağırlıklı ürün arayüzleri için Redux Toolkit, React Hook Form ve Zod deneyimi var; responsive tasarım, erişilebilirlik ve performansa önem veriyor.";
     } else {
       response = FALLBACK_RESPONSES.frontend;
     }
@@ -575,7 +565,7 @@ function generateFallbackResponse(message: string, userLanguage: 'tr' | 'en' = '
   else if (lowerMessage.includes('database') || lowerMessage.includes('mongodb') || lowerMessage.includes('postgresql') || 
            lowerMessage.includes('sql') || lowerMessage.includes('nosql') || lowerMessage.includes('veritabanı')) {
     if (userLanguage === 'tr') {
-      response = "Furkan hem SQL hem de NoSQL veritabanlarıyla çalışıyor. **MongoDB** (NoSQL) için doküman tabanlı depolama ve **PostgreSQL** (SQL) için ilişkisel veri konularında kapsamlı deneyime sahip. MongoDB için Mongoose'u ODM olarak kullanıyor ve veritabanı tasarımı, sorgu optimizasyonu ve veri modelleme konularında deneyimi var. Veritabanı uzmanlığı karmaşık veri yapılarıyla çalışmayı, verimli sorgular uygulamayı ve full-stack uygulamalarda veri bütünlüğünü sağlamayı içeriyor.";
+      response = "Furkan hem ilişkisel hem doküman veritabanlarıyla çalışıyor. Üretim ortamında **Oracle Database** kullanıyor — kurumsal API'lerin arkasında PL/SQL, stored procedure ve package'lar — ayrıca MySQL ile canlı bir e-ticaret sitesi işletiyor. Kendi projelerinde **MongoDB** (Mongoose ile) kullanıyor; PostgreSQL ve TypeORM deneyimi de var. API–prosedür sınırındaki veri hatalarını ayıklamaya alışkın.";
     } else {
       response = FALLBACK_RESPONSES.database;
     }
@@ -587,7 +577,7 @@ function generateFallbackResponse(message: string, userLanguage: 'tr' | 'en' = '
            lowerMessage.includes('experience') || lowerMessage.includes('job') || 
            lowerMessage.includes('work history') || lowerMessage.includes('deneyim')) {
     if (userLanguage === 'tr') {
-      response = "3+ yıllık deneyime sahip Furkan, MERN stack ve modern web teknolojilerine odaklanarak full-stack geliştirme konusunda uzmanlaşmış. Şu anda AWS Developer Associate sertifikası için hazırlanıyor. Uzmanlığı ölçeklenebilir uygulamalar geliştirme, mikroservis mimarisi uygulama, web performans optimizasyonu ve DevOps otomasyonunu içeriyor.";
+      response = "Furkan şu anda İstanbul'da bir lojistik firmasında Operasyonel Yazılımlar / Mobil Yazılım Uzmanı. Sahada kullanılan Android (Java) uygulamaları, .NET 8 Web API'leri ve Oracle PL/SQL entegrasyonları geliştiriyor. Öncesinde aynı organizasyonda ~1.300 cihazlık güvenlik sistemi filosunun operasyonunu yürüttü. Kendi projelerinde Next.js, TypeScript ve Node.js ile web ve AI ürünleri geliştiriyor.";
     } else {
       response = FALLBACK_RESPONSES.experience;
     }
@@ -598,7 +588,7 @@ function generateFallbackResponse(message: string, userLanguage: 'tr' | 'en' = '
            lowerMessage.includes('project') || lowerMessage.includes('work on') || 
            lowerMessage.includes('built') || lowerMessage.includes('proje')) {
     if (userLanguage === 'tr') {
-      response = "Furkan birkaç heyecan verici proje üzerinde çalıştı! 🚀\n\n1. **Kişisel Portfolio** - Three.js kullanarak 3D animasyonlar, AI chatbot ve responsive tasarım içeren modern bir portfolio web sitesi (cotneo.com). Next.js, TypeScript ve Tailwind CSS ile geliştirildi.\n\n2. **Full Stack Uygulamalar** - RESTful API'ler, GraphQL entegrasyonu, gerçek zamanlı güncellemeler ve kimlik doğrulama sistemleri gibi modern özelliklere sahip çeşitli MERN stack uygulamaları. Daha fazla detay için GitHub'ını (github.com/CotNeo) kontrol edebilirsin.\n\n3. **Cloud-Based Çözümler** - AWS, Vercel ve diğer cloud platformlarında CI/CD pipeline'ları ile dağıtılan projeler.\n\nTüm projeler modern web teknolojilerine, performans optimizasyonuna ve etkileyici kullanıcı deneyimleri yaratmaya odaklanıyor!";
+      response = "Furkan'ın öne çıkan projeleri:\n\n1. **CV Generator SaaS** — şablonlar, PDF üretimi ve auth içeren profesyonel CV hazırlama uygulaması (Next.js, TypeScript, Node.js, MongoDB).\n\n2. **RAG Chatbot** — Qdrant vektör arama ve embedding kullanan doküman tabanlı AI chatbot.\n\n3. **WhatsApp Lead Automation** — Selenium ile müşteri adayı takibi ve mesajlaşma otomasyonu.\n\n4. **Canlı OpenCart e-ticaret sitesi** — üretimde gerçek siparişlerle çalışıyor.\n\n5. **3D Globe** — React içinde Cesium tabanlı jeouzamsal görselleştirme.\n\nDaha fazlası GitHub'ında: github.com/CotNeo";
     } else {
       response = FALLBACK_RESPONSES.projects;
     }

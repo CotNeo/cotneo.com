@@ -1,156 +1,66 @@
-# CotNeo - Personal Portfolio Website
+# cotneo.com — Personal Portfolio
 
-This is my personal portfolio website built with modern web technologies. The project showcases my skills, projects, and experience in web development.
+Personal portfolio of **Furkan Akar — Full-Stack & Mobile Software Developer**.
+Live at [cotneo.com](https://cotneo.com).
 
-## Tech Stack
+## Tech stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
-- **3D Graphics**: Three.js, React Three Fiber
-- **UI/UX**: Modern design with smooth animations and responsive layout
-- **Performance**: Optimized with next/font and sharp for image processing
-- **AI Integration**: OpenAI GPT-3.5 Turbo for chatbot
-- **Caching**: Vercel KV for rate limiting and response caching
-- **Analytics**: Custom visitor tracking system
+- **Framework**: Next.js 15 (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS v4 with custom design tokens (dark "engineering blueprint" theme)
+- **Fonts**: Inter + JetBrains Mono via `next/font`
+- **AI assistant**: OpenAI API with language detection (TR/EN) and fallback responses
+- **Data**: Vercel KV for chat rate limiting and caching; GitHub API for live repo stats
+- **Deployment**: Vercel
 
-## Features
+## Architecture
 
-- 🎨 Modern and minimalist design
-- 🌟 Interactive 3D background
-- 💼 Project showcase
-- 🛠️ Tech stack display
-- 💬 AI-powered chatbot with natural conversation (ChatGPT-like experience)
-  - 🌍 Multi-language support (Turkish/English auto-detection)
-  - 🧠 Context-aware conversations
-  - 📝 Fallback responses for offline/error scenarios
-  - 🎯 Topic filtering (only answers about Furkan's professional background)
-  - 💡 Smart suggestions and helpful responses
-- 📱 Fully responsive layout
-- 📊 Real-time visitor analytics
-- 🔒 Cookie consent management
-- ⚡ Performance optimized
-- 🔄 Rate limiting and caching
+All site content (experience, projects, skills, education) lives in a single typed data
+file — updating the site means editing one file:
 
-## Getting Started
+```
+src/
+├── data/profile.ts          # single source of truth for all content
+├── app/
+│   ├── layout.tsx           # SEO metadata + JSON-LD Person schema
+│   ├── page.tsx             # section composition
+│   └── api/
+│       ├── chat/            # AI assistant (OpenAI + fallbacks + rate limiting)
+│       └── github/          # live GitHub stats
+└── components/
+    ├── ui/                  # Reveal (scroll animation), SectionHeading
+    ├── Hero.tsx             # terminal-card hero
+    ├── Experience.tsx       # timeline
+    ├── Skills.tsx           # skill groups with honest proficiency levels
+    └── ...                  # About, Projects, Certificates, Contact, Footer
+```
 
-First, install the dependencies:
+Sections animate with a lightweight IntersectionObserver + CSS transition
+(`prefers-reduced-motion` respected) — no animation library on the main page,
+no WebGL. First Load JS ≈ 171 kB.
+
+The `docs/` folder contains career content sources (CV, LinkedIn, GitHub README,
+case-study drafts, SEO notes) that this site's content is derived from.
+
+## Getting started
 
 ```bash
 npm install
-# or
-yarn install
-# or
-pnpm install
+npm run dev
 ```
 
-Then, create a `.env` file with the following variables:
+Create a `.env.local` with:
 
 ```env
-# OpenAI Configuration
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Vercel KV Configuration
-KV_REST_API_URL=https://your-kv-rest-api-url.vercel.app
-KV_REST_API_TOKEN=your_kv_rest_api_token_here
-KV_REST_API_READ_ONLY_TOKEN=your_kv_rest_api_read_only_token_here
-
-# GitHub Configuration (Optional but recommended)
-# Get your token from: https://github.com/settings/tokens
-# Create a token with 'public_repo' scope
-# Without token: 60 requests/hour (unauthenticated)
-# With token: 5000 requests/hour (authenticated)
-GITHUB_TOKEN=your_github_personal_access_token_here
+OPENAI_API_KEY=...            # chatbot (works with fallbacks if unset)
+KV_REST_API_URL=...           # Vercel KV (optional; disables rate limiting if unset)
+KV_REST_API_TOKEN=...
+GITHUB_TOKEN=...              # raises GitHub API limit from 60 to 5000 req/h
 ```
-
-Run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Project Structure
-
-```
-cotneo/
-├── src/
-│   ├── app/                # Next.js app router
-│   │   ├── api/           # API routes
-│   │   │   ├── chat/      # Chatbot API
-│   │   │   └── visitors/  # Visitor tracking API
-│   │   └── page.tsx       # Main page
-│   ├── components/        # React components
-│   │   ├── ChatBot/      # AI Chatbot component
-│   │   ├── VisitorCounter/ # Visitor tracking
-│   │   └── ...           # Other components
-│   └── styles/           # Global styles
-├── public/               # Static assets
-└── package.json         # Dependencies and scripts
-```
-
-## API Endpoints
-
-### Chat API
-- **Endpoint**: `/api/chat`
-- **Method**: POST
-- **Body**: `{ message: string, conversationId?: string, previousMessages?: Array }`
-- **Features**: 
-  - Rate limiting (100 requests/hour per IP)
-  - Response caching with Vercel KV
-  - Context-aware conversations (maintains conversation history)
-  - Automatic language detection (Turkish/English)
-  - Fallback responses for offline/error scenarios
-  - Natural conversation flow (ChatGPT-like experience)
-  - Topic filtering (only answers about professional background)
-  - Smart keyword matching for common questions
-
-### Visitor API
-- **Endpoint**: `/api/visitors`
-- **Method**: GET
-- **Features**:
-  - Real-time visitor tracking
-  - Cookie-based consent management
-  - Analytics data collection
 
 ## Deployment
 
-The site is deployed on Vercel. Every push to the main branch triggers an automatic deployment.
-
-### Environment Setup
-1. Add required environment variables in Vercel dashboard:
-   - `OPENAI_API_KEY`: Your OpenAI API key for chatbot functionality
-   - `KV_REST_API_URL`: Vercel KV database URL
-   - `KV_REST_API_TOKEN`: Vercel KV API token
-   - `KV_REST_API_READ_ONLY_TOKEN`: Vercel KV read-only token (optional)
-2. Configure KV database in Vercel dashboard
-3. Set up OpenAI API key (required for AI chatbot)
-
-### Note
-- The chatbot works with fallback responses even if OpenAI API key is not set
-- Rate limiting and caching are handled automatically
-- All features work seamlessly in production
-
-## Performance Optimization
-
-- Image optimization with next/image
-- Font optimization with next/font
-- Code splitting and lazy loading
-- Caching strategies
-- Rate limiting implementation
-
-## Recent Updates
-
-- ✅ Enhanced AI chatbot with multi-language support (Turkish/English)
-- ✅ Improved language detection and natural conversation flow
-- ✅ Added contact information responses
-- ✅ Better fallback responses for common questions
-- ✅ ChatGPT-like conversational experience
-- ✅ Fixed mobile menu overlap issues
-- ✅ Improved responsive design
+Deployed on Vercel; pushes to `main` deploy automatically. Set the environment
+variables above in the Vercel dashboard.
 
 ## Contact
 
@@ -160,4 +70,4 @@ The site is deployed on Vercel. Every push to the main branch triggers an automa
 
 ## License
 
-This project is licensed under the MIT License.
+MIT

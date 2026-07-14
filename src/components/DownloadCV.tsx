@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { FaLinkedin, FaEnvelope, FaQrcode, FaEye } from 'react-icons/fa';
+import { FaQrcode, FaDownload } from 'react-icons/fa';
 import { QRCodeSVG } from 'qrcode.react';
 
+/**
+ * Secondary CTA: downloads the CV with progress feedback,
+ * plus a QR modal for grabbing the CV on a phone.
+ */
 const DownloadCV = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
-  const [showInfo, setShowInfo] = useState<boolean>(false);
-  const [showQR, setShowQR] = useState<boolean>(false);
-  const [showPreview, setShowPreview] = useState<boolean>(false);
-  const [zoomLevel, setZoomLevel] = useState<number>(100);
+  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showQR, setShowQR] = useState(false);
 
   const handleDownload = async () => {
     setIsLoading(true);
@@ -24,20 +24,19 @@ const DownloadCV = () => {
       let loaded = 0;
 
       const reader = response.body?.getReader();
-      const chunks = [];
+      const chunks: Uint8Array[] = [];
 
       if (reader) {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          
           chunks.push(value);
           loaded += value.length;
-          setProgress(Math.round((loaded / total) * 100));
+          if (total) setProgress(Math.round((loaded / total) * 100));
         }
       }
 
-      const blob = new Blob(chunks, { type: 'application/pdf' });
+      const blob = new Blob(chunks as BlobPart[], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -47,23 +46,13 @@ const DownloadCV = () => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
 
-      toast.success('CV downloaded successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.success('CV downloaded', { position: 'top-right', autoClose: 2500, theme: 'dark' });
     } catch (error) {
       console.error('Error downloading CV:', error);
-      toast.error('Failed to download CV. Please try again.', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
+      toast.error('Download failed — please try again.', {
+        position: 'top-right',
+        autoClose: 2500,
+        theme: 'dark',
       });
     } finally {
       setIsLoading(false);
@@ -71,224 +60,66 @@ const DownloadCV = () => {
     }
   };
 
-  const handleShare = (platform: 'linkedin' | 'email') => {
-    const cvUrl = window.location.origin + '/cv.pdf';
-    if (platform === 'linkedin') {
-      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(cvUrl)}`, '_blank');
-    } else {
-      window.location.href = `mailto:?subject=Furkan Akar's CV&body=Check out my CV: ${cvUrl}`;
-    }
-  };
-
-  const handleZoom = (direction: 'in' | 'out') => {
-    setZoomLevel(prev => {
-      const newZoom = direction === 'in' ? prev + 25 : prev - 25;
-      return Math.min(Math.max(newZoom, 50), 200);
-    });
-  };
-
   return (
-    <div className="relative">
-      <div className="flex flex-col items-center space-y-4">
-        {/* Main download button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onHoverStart={() => setShowInfo(true)}
-          onHoverEnd={() => setShowInfo(false)}
-          onClick={handleDownload}
-          disabled={isLoading}
-          className="relative px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold 
-                   shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
-                   flex items-center space-x-2 overflow-hidden group"
-        >
-          {/* Glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 
-                        group-hover:opacity-100 opacity-0 transition-opacity duration-300" />
-          
-          {/* Button content */}
-          <div className="relative z-10 flex items-center space-x-2">
-            {isLoading ? (
-              <>
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Downloading... {progress}%</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <span>Download CV</span>
-              </>
-            )}
-          </div>
-
-          {/* Progress bar */}
-          {isLoading && (
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              className="absolute bottom-0 left-0 h-1 bg-white/30"
-            />
-          )}
-        </motion.button>
-
-        {/* Action buttons */}
-        <div className="flex space-x-2">
-          {/* Preview button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowPreview(true)}
-            className="px-3 py-1 bg-gray-800 text-white rounded-lg text-sm hover:bg-gray-700 transition-colors"
-          >
-            <FaEye className="inline-block mr-1" />
-            Preview
-          </motion.button>
-
-          {/* QR button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowQR(!showQR)}
-            className="px-3 py-1 bg-gray-800 text-white rounded-lg text-sm hover:bg-gray-700 transition-colors"
-          >
-            <FaQrcode className="inline-block mr-1" />
-            QR
-          </motion.button>
-        </div>
-
-        {/* Social sharing buttons */}
-        <div className="flex space-x-2">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => handleShare('linkedin')}
-            className="px-3 py-1 bg-[#0077B5] text-white rounded-lg text-sm hover:bg-[#006699] transition-colors"
-          >
-            <FaLinkedin className="inline-block mr-1" />
-            Share
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => handleShare('email')}
-            className="px-3 py-1 bg-gray-800 text-white rounded-lg text-sm hover:bg-gray-700 transition-colors"
-          >
-            <FaEnvelope className="inline-block mr-1" />
-            Email
-          </motion.button>
-        </div>
-
-        {/* Preview modal */}
-        <AnimatePresence>
-          {showPreview && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-              onClick={() => setShowPreview(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.9 }}
-                className="bg-white p-4 rounded-lg w-[90vw] h-[90vh] flex flex-col"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">CV Preview</h2>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleZoom('out')}
-                      className="px-2 py-1 bg-gray-200 rounded"
-                      disabled={zoomLevel <= 50}
-                    >
-                      -
-                    </button>
-                    <span className="px-2 py-1">{zoomLevel}%</span>
-                    <button
-                      onClick={() => handleZoom('in')}
-                      className="px-2 py-1 bg-gray-200 rounded"
-                      disabled={zoomLevel >= 200}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-                <iframe
-                  src="/cv.pdf#toolbar=0&navpanes=0"
-                  className="flex-1 w-full"
-                  style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left' }}
-                />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* QR Code modal */}
-        <AnimatePresence>
-          {showQR && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-              onClick={() => setShowQR(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.9 }}
-                className="bg-white p-6 rounded-lg flex flex-col items-center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h2 className="text-xl font-semibold mb-4">Scan to Download CV</h2>
-                
-                <QRCodeSVG
-                  value={`${window.location.origin}/cv.pdf`}
-                  size={192}
-                  level="H"
-                  includeMargin={true}
-                  imageSettings={{
-                    src: '/favicon.ico',
-                    height: 40,
-                    width: 40,
-                    excavate: true,
-                  }}
-                />
-
-                <p className="mt-4 text-gray-600 text-center max-w-xs">
-                  Scan this QR code with your phone to download my CV
-                </p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* File info tooltip */}
-      <AnimatePresence>
-        {showInfo && !isLoading && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 
-                     bg-gray-800 text-white text-sm px-3 py-2 rounded-lg shadow-lg
-                     whitespace-nowrap"
-          >
-            PDF Format • ~2MB
-          </motion.div>
+    <div className="flex items-center gap-2">
+      <button
+        onClick={handleDownload}
+        disabled={isLoading}
+        className="relative px-5 py-3 rounded-md border border-edge text-fog font-semibold text-sm
+                   hover:border-accent/50 hover:text-white transition-colors duration-200
+                   disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden"
+      >
+        <span className="relative z-10 flex items-center gap-2">
+          <FaDownload className="w-3.5 h-3.5" />
+          {isLoading ? `Downloading… ${progress}%` : 'Download CV'}
+        </span>
+        {isLoading && (
+          <span
+            className="absolute bottom-0 left-0 h-0.5 bg-accent transition-all duration-200"
+            style={{ width: `${progress}%` }}
+          />
         )}
-      </AnimatePresence>
+      </button>
+
+      <button
+        onClick={() => setShowQR(true)}
+        aria-label="Show QR code for CV"
+        title="Scan QR to open CV on your phone"
+        className="p-3 rounded-md border border-edge text-mist hover:text-accent hover:border-accent/50 transition-colors duration-200"
+      >
+        <FaQrcode className="w-4 h-4" />
+      </button>
+
+      {showQR && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+          onClick={() => setShowQR(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="CV QR code"
+        >
+          <div
+            className="panel p-8 flex flex-col items-center max-w-xs w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="section-label mb-4">cv.pdf</p>
+            <div className="bg-white p-3 rounded-lg">
+              <QRCodeSVG value="https://cotneo.com/cv.pdf" size={180} level="H" />
+            </div>
+            <p className="mt-4 text-sm text-mist text-center">
+              Scan with your phone to open the CV.
+            </p>
+            <button
+              onClick={() => setShowQR(false)}
+              className="mt-5 text-sm text-accent hover:underline"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default DownloadCV; 
+export default DownloadCV;
