@@ -1,21 +1,23 @@
+import MatrixRain from './MatrixRain';
+
 /**
- * Lightweight static background: blueprint grid + two soft accent glows.
- * Replaces the previous WebGL galaxy (three.js) — zero runtime cost,
- * no per-frame work, and it respects reduced-motion by default.
+ * Background: dark ink base + a Matrix-style digital rain layer on a
+ * plain 2D canvas (no three.js — see MatrixRain) + two soft accent
+ * glows. The rain skips itself under prefers-reduced-motion, so that
+ * case falls back to the flat ink + glows, same as before.
  */
 const SiteBackground = () => (
   <div className="fixed inset-0 -z-10 overflow-hidden bg-ink" aria-hidden>
-    {/* Blueprint grid */}
+    {/* Digital rain, vignetted so it stays subtle behind content */}
     <div
-      className="absolute inset-0 opacity-[0.35]"
+      className="absolute inset-0 opacity-40"
       style={{
-        backgroundImage:
-          'linear-gradient(rgba(148,163,184,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.05) 1px, transparent 1px)',
-        backgroundSize: '56px 56px',
-        maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)',
-        WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)',
+        maskImage: 'radial-gradient(ellipse 90% 80% at 50% 30%, black 30%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at 50% 30%, black 30%, transparent 100%)',
       }}
-    />
+    >
+      <MatrixRain />
+    </div>
     {/* Accent glows */}
     <div
       className="absolute -top-40 left-1/2 h-[480px] w-[720px] -translate-x-1/2 rounded-full blur-3xl"
