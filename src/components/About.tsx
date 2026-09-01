@@ -38,7 +38,7 @@ const About = () => {
             <div className="panel p-2 max-w-xs mx-auto md:mx-0">
               <div className="relative overflow-hidden rounded-lg bg-ink">
                 <Image
-                  src="/images/profile-optimized.webp"
+                  src="/profile.png"
                   alt="Furkan Akar"
                   width={800}
                   height={1200}
