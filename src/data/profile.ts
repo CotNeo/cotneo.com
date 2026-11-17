@@ -14,7 +14,7 @@ export const site = {
   location: 'Istanbul, Türkiye',
   timezone: 'UTC+3',
   email: 'furkanaliakar@gmail.com',
-  url: 'https://cotneo.com',
+  url: 'https://www.cotneo.com',
   availability: 'Open to remote and relocation-supported roles',
   intro:
     'I work across the full stack — React and Next.js on the web, native Android and React Native on mobile, .NET and Node.js on the backend, and Oracle PL/SQL underneath it all. Most of my day-to-day work ships to production in logistics operations: barcode scanning, label printing, shipment and invoicing flows used in the field every day.',

@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "Software Developer Turkey",
     "Furkan Akar",
   ],
-  authors: [{ name: "Furkan Akar", url: "https://cotneo.com" }],
+  authors: [{ name: "Furkan Akar", url: "https://www.cotneo.com" }],
   creator: "Furkan Akar",
   publisher: "Furkan Akar",
   formatDetection: {
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://cotneo.com"),
+  metadataBase: new URL("https://www.cotneo.com"),
   alternates: {
     canonical: "/",
   },
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "Furkan Akar | Full-Stack & Mobile Software Developer",
     description:
       "Web, mobile and enterprise software for real-world operations — React, Next.js, Node.js, .NET 8, native Android and Oracle PL/SQL.",
-    url: "https://cotneo.com",
+    url: "https://www.cotneo.com",
     siteName: "Furkan Akar",
     images: [
       {
@@ -84,7 +84,7 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Furkan Akar",
-  url: "https://cotneo.com",
+  url: "https://www.cotneo.com",
   jobTitle: "Full-Stack & Mobile Software Developer",
   email: "mailto:furkanaliakar@gmail.com",
   address: {
