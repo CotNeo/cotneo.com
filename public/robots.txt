@@ -4,6 +4,7 @@ Allow: /
 
 # Sitemap location
 Sitemap: https://cotneo.com/sitemap.xml
+Sitemap: https://www.cotneo.com/tv/sitemap.xml
 
 # Disallow admin and API routes
 Disallow: /api/

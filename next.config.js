@@ -63,6 +63,21 @@ const nextConfig = {
       },
     ]
   },
+  // www.cotneo.com/tv is the Cotneo TV site: a separate Vercel project (CotNeo/android-tv-browser, website/)
+  // built with basePath /tv, so its pages and /tv/_next assets are proxied as they are. It is reached through
+  // its custom domain because Vercel Authentication protects the project's vercel.app addresses.
+  async rewrites() {
+    const tv = 'https://tv.cotneo.com';
+    return {
+      beforeFiles: [
+        { source: '/tv', destination: `${tv}/tv` },
+        { source: '/tv/:path*', destination: `${tv}/tv/:path*` },
+        // App links are looked up at the root of the domain.
+        { source: '/.well-known/apple-app-site-association', destination: `${tv}/tv/.well-known/apple-app-site-association` },
+        { source: '/.well-known/assetlinks.json', destination: `${tv}/tv/.well-known/assetlinks.json` },
+      ],
+    };
+  },
   async redirects() {
     return [
       {
