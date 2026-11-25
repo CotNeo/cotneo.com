@@ -69,15 +69,21 @@ const nextConfig = {
   //
   // www.cotneo.com/game is the browser game "Kırık Akor: Son Gece": a separate Vercel project (CotNeo/mobile_game)
   // built with base /game/, so its page and its /game/static and /game/assets files are proxied as they are.
+  //
+  // www.cotneo.com/atlasfit is the Atlas Fit site: a separate Vercel project (CotNeo/Atlas-Fit, website/) built
+  // with basePath /atlasfit, reached through its custom domain like /tv.
   async rewrites() {
     const tv = 'https://tv.cotneo.com';
     const game = 'https://kirik-akor.vercel.app';
+    const atlasfit = 'https://atlasfit.cotneo.com';
     return {
       beforeFiles: [
         { source: '/tv', destination: `${tv}/tv` },
         { source: '/tv/:path*', destination: `${tv}/tv/:path*` },
         { source: '/game', destination: `${game}/game` },
         { source: '/game/:path*', destination: `${game}/game/:path*` },
+        { source: '/atlasfit', destination: `${atlasfit}/atlasfit` },
+        { source: '/atlasfit/:path*', destination: `${atlasfit}/atlasfit/:path*` },
         // App links are looked up at the root of the domain.
         { source: '/.well-known/apple-app-site-association', destination: `${tv}/tv/.well-known/apple-app-site-association` },
         { source: '/.well-known/assetlinks.json', destination: `${tv}/tv/.well-known/assetlinks.json` },
