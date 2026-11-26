@@ -5,6 +5,7 @@ Allow: /
 # Sitemap location
 Sitemap: https://www.cotneo.com/sitemap.xml
 Sitemap: https://www.cotneo.com/tv/sitemap.xml
+Sitemap: https://www.cotneo.com/atlasfit/sitemap.xml
 
 # Disallow admin and API routes
 Disallow: /api/
